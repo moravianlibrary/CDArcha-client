@@ -1,32 +1,28 @@
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Text.RegularExpressions;
-using System.Runtime.InteropServices;
 using System.Management;
 using System.Threading;
+using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Xml.Linq;
 using System.Reflection;
-using System.Windows.Controls.Primitives;
 using System.Collections.Specialized;
 using System.Security.Cryptography;
-using Microsoft.Win32.SafeHandles;
 using WIA;
 using DAP.Adorners;
 using CDArcha_klient.Classes;
@@ -98,8 +94,11 @@ namespace CDArcha_klient
         // Background worker for downloading of metadata
         private BackgroundWorker metadataReceiverBackgroundWorker = new BackgroundWorker();
 
-        // Background worker for downloading of metadata and cover and toc images
+        // Background worker for uploading of metadata and media
         private BackgroundWorker uploaderBackgroundWorker = new BackgroundWorker();
+
+        // Background worker for uploading of cover and toc images
+        private BackgroundWorker uploaderCoverTocBackgroundWorker = new BackgroundWorker();
 
         // Background worker for downloading covers
         private BackgroundWorker okczCoverBackgroundWorker = new BackgroundWorker();
@@ -129,11 +128,15 @@ namespace CDArcha_klient
         // Authority existence = authority could be scanned
         private bool authScannable = false;
 
+        private static HttpClient httpClient = new HttpClient();
+
         // Posledni nactene pdf
         public string pdfFile = "";
 
         // Posledni ziskane mediaid pomocu /api/import
-        public string tmpMediaId = "";
+        public string workingMediaId = "";
+        public string workingArchiveId = "";
+        public string lastWorkingMediaId = "";
 
         // Posledni vypocteny hash
         public string tmpMediaHash = "";
@@ -151,6 +154,10 @@ namespace CDArcha_klient
 
         // Posledne ziskane informace ohledne media ze serveru
         GetmediaJsonObject lastMediaInfo;
+
+        // Posledne ziskane informace ohledne archivu (vcetne seznamu medii v archivu)
+        List<JsonApiAllMedia> lastArchiveInfo;
+
         #endregion
 
         /// <summary>Constructor, creates new TabsControl based on given barcode</summary>
@@ -404,12 +411,6 @@ namespace CDArcha_klient
                     int idx = metadataWindow.reorder[this.metadataIndex];
                     this.generalRecord.ImportFromMetadata(this.metadata[idx]);
                     FillTextboxes();
-
-                    // download images of cover and toc
-                    if (this.generalRecord is Monograph)
-                    {
-                        this.DownloadCoverAndToc();
-                    }
                 }
             }
         }
@@ -451,6 +452,11 @@ namespace CDArcha_klient
             uploaderBackgroundWorker.DoWork += new DoWorkEventHandler(UploaderBW_DoWork);
             uploaderBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(UploaderBW_RunWorkerCompleted);
 
+            uploaderCoverTocBackgroundWorker.WorkerReportsProgress = false;
+            uploaderCoverTocBackgroundWorker.WorkerSupportsCancellation = true;
+            uploaderCoverTocBackgroundWorker.DoWork += new DoWorkEventHandler(UploaderCoverTocBW_DoWork);
+            uploaderCoverTocBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(UploaderCoverTocBW_RunWorkerCompleted);
+
             metadataReceiverBackgroundWorker.WorkerSupportsCancellation = true;
             metadataReceiverBackgroundWorker.WorkerReportsProgress = false;
             metadataReceiverBackgroundWorker.DoWork += new DoWorkEventHandler(MetadataReceiverBW_DoWork);
@@ -460,6 +466,9 @@ namespace CDArcha_klient
             okczCoverBackgroundWorker.WorkerReportsProgress = false;
             okczCoverBackgroundWorker.DoWork += new DoWorkEventHandler(RetrieveOriginalCoverAndTocInformation);
             okczCoverBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(RetrieveOriginalCoverAndTocInformation_Completed);
+
+            hashCheckBackgroundWorker.WorkerSupportsCancellation = true;
+            hashCheckBackgroundWorker.DoWork += new DoWorkEventHandler(bgCheckHash_DoWork);
         }
 
         // Starts retrieving of metadata on background
@@ -522,12 +531,12 @@ namespace CDArcha_klient
 
                         if (this.generalRecord is Monograph)
                         {
-                            // download images of cover and toc
-                            this.DownloadCoverAndToc();
-
                             // show union tab
                             if ((this.generalRecord as Monograph).listIdentifiers.Count > 2) showUnionTab();
                         }
+
+                        // load archive content into tree view
+                        reloadArchiveList_Click(null, null);
                     }
                 }
             }
@@ -539,7 +548,7 @@ namespace CDArcha_klient
             GeneralRecord record = e.Argument as GeneralRecord;
 
             this.authScannable = false;
-            
+
             if (record == null)
             {
                 return;
@@ -716,14 +725,8 @@ namespace CDArcha_klient
                 imgsrc.BeginInit();
                 imgsrc.StreamSource = e.Result;
                 imgsrc.EndInit();
-                if (this.tabControl.SelectedItem == this.controlTabItem)
-                {
-                    this.controlCoverImage.Source = imgsrc;
-                }
-                else
-                {
-                    this.originalCoverImage.Source = imgsrc;
-                }
+                this.originalCoverImage.Source = imgsrc;
+                this.expanderArchStep1.IsExpanded = true;
             }
         }
 
@@ -743,16 +746,9 @@ namespace CDArcha_klient
                 imgsrc.BeginInit();
                 imgsrc.StreamSource = e.Result;
                 imgsrc.EndInit();
-                if (this.tabControl.SelectedItem == this.controlTabItem)
-                {
-                    this.controlTocImage.Source = imgsrc;
-                    this.controlTocImage.IsEnabled = true;
-                }
-                else
-                {
-                    this.originalTocImage.Source = imgsrc;
-                    this.originalTocImage.IsEnabled = true;
-                }
+                this.originalTocImage.Source = imgsrc;
+                this.originalTocImage.IsEnabled = true;
+                this.expanderArchStep1.IsExpanded = true;
             }
         }
 
@@ -1085,7 +1081,7 @@ namespace CDArcha_klient
             bool isSerial = this.generalRecord is Periodical ? true : false;
 
             // set title to scanning tab
-            this.thumbnailsTitleLabel.Content = this.partTitleTextBox.Text;
+            //this.thumbnailsTitleLabel.Content = this.partTitleTextBox.Text;
             // year [0-9,-]
             warnTmp = ShowYearAndVolumeWarningControl(this.partYearTextBox, this.partYearWarning);
             warn = !warnTmp ? false : warn;
@@ -1423,7 +1419,7 @@ namespace CDArcha_klient
                 case 13:
                     sumIsbn = 0;
                     int pos = 0;
-                    for (int i = isbn.Length-1; i >= 0; i--)
+                    for (int i = isbn.Length - 1; i >= 0; i--)
                     {
                         pos = isbn.Length - i;
                         if (char.IsDigit(isbnArray[i]))
@@ -1661,12 +1657,12 @@ namespace CDArcha_klient
 
         #region sending to ObalkyKnih
 
-        // Checks everything and calls uploadWorker to upload to obalkyknih
+        // Checks everything and calls uploadWorker to upload archive
         public void SendToObalkyKnih()
         {
             if (uploaderBackgroundWorker.IsBusy)
             {
-                MessageBoxDialogWindow.Show("Odesílání skenu", "Počkejte, než se dokončí předchozí odesílání.",
+                MessageBoxDialogWindow.Show("Odesílání dat", "Počkejte, než se dokončí předchozí odesílání.",
                     "OK", MessageBoxDialogWindow.Icons.Error);
                 return;
             }
@@ -1682,9 +1678,20 @@ namespace CDArcha_klient
 
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
+                // progress // log
                 stepIcon1.Visibility = Visibility.Visible;
                 stepIcon1.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-hourglass.png");
+
+                logTextBox.Document.Blocks.Clear();
+                logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Kompletace identifikátorů záznamů.\r");
+
+                this.scanningTabDoneIcon.Visibility = Visibility.Hidden;
+                this.scanningStartButton.Content = "SKENOVAT";
+                this.scanningStartButton.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF6C3131"));
             }));
+
+            // download images of cover and toc
+            this.DownloadCoverAndToc();
 
             //data type
             bool isMono = this.generalRecord is Monograph ? true : false;
@@ -1710,13 +1717,228 @@ namespace CDArcha_klient
             string partName = isMonoPart ? this.partNameTextBox.Text : null;
             string partYear = isSerial ? this.partYearTextBox.Text : null;
             string partVol = isSerial ? this.partVolumeTextBox.Text : null;
+            string mediaNo = this.mediaNoTextBox.Text;
             if (isMonoPart) error += ValidatePartMono(partNo, partName);
             if (isSerial) error += ValidatePartSerial(partYear, partVol, partNo);
 
-            NameValueCollection nvc = new NameValueCollection();
+            // get record idents NVC + errors list
+            var identBuildTuple = this.identifiersBuild();
+            error = identBuildTuple.Item1;
+            NameValueCollection nvc = identBuildTuple.Item2;
+
             nvc.Add("login", Settings.UserName);
             nvc.Add("password", Settings.Password);
             nvc.Add("version", Settings.VersionInfo);
+            if (!string.IsNullOrEmpty(mediaNo))
+            {
+                mediaNo = String.Join("", mediaNo.Where(c => !char.IsWhiteSpace(c)));// remove all white spaces
+                nvc.Add("media_no", mediaNo);
+            }
+            else
+            {
+                error += "Je potřeba zdata označení média!";
+            }
+
+            if (!string.IsNullOrWhiteSpace(error))
+            {
+                MessageBoxDialogWindow.Show("Chybný identifikátor",
+                    "Některý z identifikátorů obsahuje chybu." + Environment.NewLine + error,
+                    "OK", MessageBoxDialogWindow.Icons.Error);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(isbn) && string.IsNullOrEmpty(issn) && string.IsNullOrEmpty(cnb)
+                && string.IsNullOrEmpty(oclc) && string.IsNullOrEmpty(ismn) && string.IsNullOrEmpty(urn)
+                && string.IsNullOrEmpty(custom))
+            {
+                MessageBoxDialogWindow.Show("Žádný identifikátor",
+                    "Vyplňte alespoň jeden identifikátor." + Environment.NewLine + error,
+                    "OK", MessageBoxDialogWindow.Icons.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(this.titleTextBox.Text) && string.IsNullOrWhiteSpace(this.partTitleTextBox.Text))
+            {
+                MessageBoxDialogWindow.Show("Žádný název",
+                    "Název musí být vyplněn." + Environment.NewLine + error,
+                    "OK", MessageBoxDialogWindow.Icons.Error);
+                return;
+            }
+
+            if ((string.IsNullOrWhiteSpace(this.authorTextBox.Text) || string.IsNullOrWhiteSpace(this.yearTextBox.Text))
+                && (string.IsNullOrWhiteSpace(this.partAuthorTextBox.Text) || string.IsNullOrWhiteSpace(this.partYearTextBox.Text))
+                && !Settings.DisableMissingAuthorYearNotification)
+            {
+                bool dontShowAgain;
+                var result = MessageBoxDialogWindow.Show("Chybí základní informace.",
+                    "Chybí autor nebo rok vydání. Opravdu chcete odeslat obálku bez toho?"
+                    + Environment.NewLine + error, out dontShowAgain, "Příště se neptat a odeslat",
+                    "Ano", "Ne", false, MessageBoxDialogWindow.Icons.Warning);
+                if (result != true)
+                {
+                    return;
+                }
+                if (dontShowAgain)
+                {
+                    Settings.DisableMissingAuthorYearNotification = true;
+                }
+            }
+
+            string title = isMonoPart ? this.titleTextBox.Text : this.partTitleTextBox.Text;
+            nvc.Add("title", title);
+            nvc.Add("authors", (isMonoPart ? this.authorTextBox.Text : this.partAuthorTextBox.Text) ?? "");
+            nvc.Add("year", this.yearTextBox.Text ?? "");
+            nvc.Add("ocr", (this.ocrCheckBox.IsChecked == true) ? "yes" : "no");
+            string partTitle = isMonoPart ? this.partTitleTextBox.Text : null;
+            string partAuthor = isMonoPart ? this.partAuthorTextBox.Text : null;
+            partYear = (isMonoPart || isSerial) ? this.partYearTextBox.Text : null;
+            string partVolume = isSerial ? this.partVolumeTextBox.Text : null;
+            if (partTitle != null) nvc.Add("part_title", partTitle);
+            if (partAuthor != null) nvc.Add("part_authors", partAuthor);
+            if (partYear != null) nvc.Add("part_year", partYear);
+            if (partVolume != null) nvc.Add("part_volume", partVolume);
+            if (partNo != null) nvc.Add("part_no", partNo);
+            if (partName != null) nvc.Add("part_name", partName);
+
+            // monography part, or serial identification
+            if (isSerial) nvc.Add("part_type", "serial");
+            if (isMonoPart) nvc.Add("part_type", "mono");
+
+            string metaXml = null;
+
+            //metastream
+            try
+            {
+                IPHostEntry host;
+                string localIPv4 = "";
+                string localIPv6 = "";
+                host = Dns.GetHostEntry(Dns.GetHostName());
+                foreach (IPAddress ip in host.AddressList)
+                {
+                    if (ip.AddressFamily == AddressFamily.InterNetwork)
+                    {
+                        localIPv4 = ip.ToString();
+                    }
+                    if (ip.AddressFamily == AddressFamily.InterNetworkV6)
+                    {
+                        localIPv6 = ip.ToString();
+                    }
+                }
+
+                XNamespace mets = "http://www.loc.gov/METS/";
+                XNamespace mix = "http://www.loc.gov/mix/v20";
+                XElement metsRoot = new XElement("mets",
+                    new XAttribute(XNamespace.Xmlns + "mets", mets),
+                    new XAttribute("aes57", "http://www.aes.org/publications/standards/search.cfm?docID=84"),
+                    new XAttribute("premis", "info:lc/xmlns/premis-v2"),
+                    new XAttribute("xsi", "http://www.w3.org/2001/XMLSchema-instance"),
+                    new XAttribute("mods", "http://www.loc.gov/mods/v3"),
+                    new XAttribute("oai_dc", "http://www.openarchives.org/OAI/2.0/oai_dc/"),
+                    new XAttribute("dc", "http://purl.org/dc/elements/1.1/"),
+                    new XAttribute("xlink", "http://www.w3.org/1999/xlink"),
+                    new XAttribute("LABEL", title),
+                    new XAttribute("schemaLocation", "http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.aes.org/standards/schemas/aes57-2011-08-27.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd"),
+                    new XElement(mets + "metsHdr",
+                        new XAttribute("CREATEDATE", DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")),
+                        new XAttribute("ID", "###uuid###"),
+                        new XElement(mets + "agent",
+                            new XAttribute("ROLE", "CREATOR"),
+                            new XAttribute("TYPE", "ORGANIZATION"),
+                            new XElement(mets + "name", "###organization###")
+                        )
+                    ),
+                    new XElement(mets + "structMap",
+                        new XAttribute("TYPE", "PHYSICAL"),
+                        new XElement(mets + "div",
+                            new XAttribute("TYPE", "DATACOLLECTION"),
+                            new XElement(mets + "fptr",
+                                new XAttribute("FILEID", "###filename###")
+                            )
+                        )
+                    ),
+                    new XElement(mets + "mdWrap",
+                        new XAttribute("MDTYPE", "NISOIMG"),
+                        new XAttribute("MIMETYPE", "text/xml"),
+                        new XElement(mets + "xmlData",
+                            new XElement("mix",
+                                new XAttribute(XNamespace.Xmlns + "mix", mix),
+                                new XElement(mix + "user", Settings.UserName),
+                                new XElement(mix + "sigla", Settings.Sigla),
+                                new XElement(mix + "client",
+                                    new XElement(mix + "name", "CDArcha_klient"),
+                                    new XElement(mix + "version", Assembly.GetEntryAssembly().GetName().Version),
+                                    new XElement(mix + "local-IPv4-address", localIPv4),
+                                    new XElement(mix + "local-IPv6-address", localIPv6)
+                                )
+                            )
+                        )
+                    )
+                );
+
+                XDocument xmlDoc = new XDocument(
+                new XDeclaration("1.0", "utf-8", "yes"), metsRoot);
+                metaXml = xmlDoc.ToString();
+            }
+            catch (Exception)
+            {
+                MessageBoxDialogWindow.Show("Chybný metasoubor", "Nastala chyba při tvorbě metasouboru.",
+                        "OK", MessageBoxDialogWindow.Icons.Error);
+                return;
+            }
+
+            UploadParameters param = new UploadParameters();
+            param.Url = Settings.ImportLink;
+            param.Nvc = nvc;
+
+            param.MetaXml = metaXml;
+
+            // transformace MARCXML na MODS
+            MetadataRetriever.transformMARC2MODS();
+            //string marcXmlPath = System.IO.Path.Combine(Settings.TmpDir, "marcxml.xml");
+            string modsPath = System.IO.Path.Combine(Settings.TmpDir, "mods.xml");
+            /*if (File.Exists(marcXmlPath))
+            {
+                param.MarcXml = File.ReadAllText(marcXmlPath);
+            }*/
+            if (File.Exists(modsPath))
+            {
+                param.MetaMods = File.ReadAllText(modsPath);
+            }
+
+            //DEBUGLOG.AppendLine("SendToObalkyKnih part1: Total time: " + sw.ElapsedMilliseconds);
+            this.uploaderBackgroundWorker.RunWorkerAsync(param);
+
+            controlTabItem.IsEnabled = true;
+            tabControl.SelectedItem = controlTabItem;
+        }
+
+
+        private Tuple<string, NameValueCollection> identifiersBuild()
+        {
+            NameValueCollection nvc = new NameValueCollection();
+            string error = "";
+            bool isMono = this.generalRecord is Monograph ? true : false;
+            bool isMonoSingle = (isMono && !this.unionTabVisible) ? true : false;
+            bool isMonoPart = (isMono && this.unionTabVisible) ? true : false;
+            bool isSerial = this.generalRecord is Periodical ? true : false;
+            string isbn = isMonoPart ? this.isbnTextBox.Text : this.partIsbnTextBox.Text;
+            string issn = isSerial ? this.partIssnTextBox.Text : null;
+            string partIsbn = isMonoPart ? this.partIsbnTextBox.Text : null;
+            string oclc = isMonoPart ? this.oclcTextBox.Text : this.partOclcTextBox.Text;
+            string partOclc = isMonoPart ? this.partOclcTextBox.Text : null;
+            string ismn = isMonoPart ? this.ismnTextBox.Text : this.partIsmnTextBox.Text;
+            string partIsmn = isMonoPart ? this.partIsmnTextBox.Text : null;
+            string cnb = isMonoPart ? this.cnbTextBox.Text : this.partCnbTextBox.Text;
+            string partCnb = isMonoPart ? this.partCnbTextBox.Text : null;
+            string urn = isMonoPart ? this.urnNbnTextBox.Text : this.partUrnNbnTextBox.Text;
+            string partUrn = isMonoPart ? this.partUrnNbnTextBox.Text : null;
+            string custom = isMonoPart ? this.siglaTextBox.Text : this.partSiglaTextBox.Text;
+            string partCustom = isMonoPart ? this.partSiglaTextBox.Text : null;
+            string partNo = (isMonoPart || isSerial) ? this.partNumberTextBox.Text : null;
+            string partName = isMonoPart ? this.partNameTextBox.Text : null;
+            string partYear = isSerial ? this.partYearTextBox.Text : null;
+            string partVol = isSerial ? this.partVolumeTextBox.Text : null;
+
             if (!string.IsNullOrEmpty(isbn))
             {
                 isbn = String.Join("", isbn.Where(c => !char.IsWhiteSpace(c)));// remove all white spaces
@@ -1798,72 +2020,209 @@ namespace CDArcha_klient
                 }
             }
 
+            return Tuple.Create(error, nvc);
+        }
+
+
+        // Method for uploading multipart/form-data
+        // url where will be data posted, login, password
+        //private void UploadFilesToRemoteUrl(string url, string coverFileName, List<string> tocFileNames, List<string> authFileNames, string metaXml, NameValueCollection nvc, DoWorkEventArgs e)
+        private void UploadFilesToRemoteUrl(string url, NameValueCollection nvc, string metaXml, string marcXml, string metaMods, DoWorkEventArgs e)
+        {
+            //Stopwatch sw = new Stopwatch();
+            //sw.Start();
+            // Check version
+            /*
+            UpdateChecker updateChecker = new UpdateChecker();
+            updateChecker.RetrieveUpdateInfo();
+            if (!updateChecker.IsSupportedVersion)
+            {
+                throw new WebException("Používáte nepodporovanou verzi programu. Aktualizujte ho.",
+                    WebExceptionStatus.ProtocolError);
+            }
+            */
+
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Chystání metadatových souborů MARC XML a MODS.\r");
+            }));
+
+            try
+            {
+                HttpWebRequest requestToServer = (HttpWebRequest)WebRequest.Create(url + "?version=" + Assembly.GetEntryAssembly().GetName().Version + "&login=" + Settings.UserName + "&password=" + Settings.Password);
+
+                requestToServer.Timeout = 10000;
+
+                // Define a boundary string
+                string boundaryString = "CDArchaFormBoundary" + DateTime.Now.Ticks.ToString("x");
+
+                // Turn off the buffering of data to be written, to prevent OutOfMemoryException when sending data
+                requestToServer.SendChunked = true;
+                requestToServer.AllowWriteStreamBuffering = false;
+                // Specify that request is a HTTP post
+                requestToServer.Method = WebRequestMethods.Http.Post;
+                // Specify that the content type is a multipart request
+                requestToServer.ContentType = "multipart/form-data; boundary=" + boundaryString;
+
+                UTF8Encoding utf8 = new UTF8Encoding();
+                string boundaryStringLine = "--" + boundaryString + "\r\n";
+
+                string lastBoundaryStringLine = "--" + boundaryString + "--";
+                byte[] lastBoundaryStringLineBytes = utf8.GetBytes(lastBoundaryStringLine);
+
+
+                // TEXT PARAMETERS
+                string formDataString = "";
+                foreach (string key in nvc.Keys)
+                {
+                    formDataString += boundaryStringLine
+                        + String.Format(
+                    "Content-Disposition: form-data; name=\"{0}\"; filename=\"{0}\"\r\nContent-Type: text/plain\r\n\r\n{1}\r\n",
+                    key,
+                    nvc[key]);
+                }
+                byte[] formDataBytes = utf8.GetBytes(formDataString);
+
+                // META PARAMETER
+                string metaDataString = boundaryStringLine
+                    + String.Format(
+                    "Content-Disposition: form-data; name=\"{0}\"; "
+                    + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
+                    "meta", "meta.xml", "text/xml")
+                    + metaXml + "\r\n";
+                byte[] metaDataBytes = utf8.GetBytes(metaDataString);
+
+                // MARC XML
+                string marcXmlString = boundaryStringLine
+                    + String.Format(
+                    "Content-Disposition: form-data; name=\"{0}\"; "
+                    + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
+                    "marcxml", "marcxml.xml", "text/xml")
+                    + marcXml + "\r\n";
+                byte[] marcXmlBytes = utf8.GetBytes(marcXmlString);
+
+                // MODS
+                string metaModsString = boundaryStringLine
+                    + String.Format(
+                    "Content-Disposition: form-data; name=\"{0}\"; "
+                    + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
+                    "mods", "mods.xml", "text/xml")
+                    + metaMods + "\r\n";
+                byte[] metaModsBytes = utf8.GetBytes(metaModsString);
+
+                // Calculate the total size of the HTTP request
+                long totalRequestBodySize =
+                    +lastBoundaryStringLineBytes.Length
+                    + formDataBytes.Length
+                    //+ coverSize
+                    //+ tocSize
+                    + metaDataBytes.Length
+                    + marcXmlBytes.Length
+                    + metaModsBytes.Length;
+
+                // And indicate the value as the HTTP request content length
+                requestToServer.ContentLength = totalRequestBodySize;
+
+
+                // Write the http request body directly to the server
+                using (Stream s = requestToServer.GetRequestStream())
+                {
+                    // Send text parameters
+                    s.Write(formDataBytes, 0, formDataBytes.Length);
+
+                    // Send meta
+                    s.Write(metaDataBytes, 0, metaDataBytes.Length);
+
+                    // Send MarcXML
+                    s.Write(marcXmlBytes, 0, marcXmlBytes.Length);
+
+                    // Send MODS
+                    s.Write(metaModsBytes, 0, metaModsBytes.Length);
+
+                    // Send the last part of the HTTP request body
+                    s.Write(lastBoundaryStringLineBytes, 0, lastBoundaryStringLineBytes.Length);
+                }
+
+                //DEBUGLOG.AppendLine("UploadFilesToRemoteUrl (upload data): Total time: " + sw.ElapsedMilliseconds);
+
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Zasílání identifikátorů a metadat.\r");
+                }));
+
+                WebResponse response = requestToServer.GetResponse();
+                StreamReader responseReader = new StreamReader(response.GetResponseStream());
+                e.Result = responseReader.ReadToEnd();
+                response.Close();
+                requestToServer.Abort();
+
+                //DEBUGLOG.AppendLine("UploadFilesToRemoteUrl: Total time: " + sw.ElapsedMilliseconds);
+            }
+            catch (WebException ex) {
+                HttpStatusCode wRespStatusCode = ((HttpWebResponse)ex.Response).StatusCode;
+                if (wRespStatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    MessageBoxDialogWindow.Show("Odesílání dat", "API odmítá spojení. Pravděpodobně se nezhoduje verze aplikace s verzí API.",
+                    "OK", MessageBoxDialogWindow.Icons.Error);
+                }
+                else if (wRespStatusCode == System.Net.HttpStatusCode.Unauthorized)
+                {
+                    MessageBoxDialogWindow.Show("Odesílání dat", "Špatné přihlašovací jméno, nebo heslo.",
+                    "OK", MessageBoxDialogWindow.Icons.Error);
+                }
+            }
+        }
+
+        // Checks everything and calls uploadCoverTocWorker to upload cover and toc
+        public void SendCoverToc()
+        {
+            if (uploaderCoverTocBackgroundWorker.IsBusy)
+            {
+                MessageBoxDialogWindow.Show("Odesílání dat", "Počkejte, než se dokončí předchozí odesílání obálek.",
+                    "OK", MessageBoxDialogWindow.Icons.Error);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(Settings.UserName))
+            {
+                MessageBoxDialogWindow.Show("Žádné přihlašovací údaje", "Nastavte přihlašovací údaje.",
+                    "OK", MessageBoxDialogWindow.Icons.Error);
+                return;
+            }
+
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                this.scanningTabDoneIcon.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-hourglass.png");
+                this.scanningTabDoneIcon.Visibility = Visibility.Visible;
+                this.scanningStartButton.Content = "Zasílání dat...";
+                this.scanningStartButton.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FFCCCCCC"));
+                logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Kompletace dat pro odesílání obálek a bookletů.\r");
+            }));
+
+            //validate
+            string error = "";
+
+            NameValueCollection nvc = new NameValueCollection();
+            nvc.Add("login", Settings.UserName);
+            nvc.Add("password", Settings.Password);
+            nvc.Add("version", Settings.VersionInfo);
+            if (!string.IsNullOrEmpty(this.lastWorkingMediaId))
+            {
+                nvc.Add("id", this.lastWorkingMediaId);
+            }
+            else
+            {
+                error += "Chybí identifikace média. Skenování je možné pouze v kontextu s procesem archivace! Ujištěte se, že probíhá archivace, nebo máte načtena data o archivu.";
+            }
+
             if (!string.IsNullOrWhiteSpace(error))
             {
-                MessageBoxDialogWindow.Show("Chybný identifikátor",
-                    "Některý z identifikátorů obsahuje chybu." + Environment.NewLine + error,
+                MessageBoxDialogWindow.Show("Před odeslaním byl nalezen problém",
+                    "Před odeslaním dat byl nalezen tento problém:" + Environment.NewLine + error,
                     "OK", MessageBoxDialogWindow.Icons.Error);
                 return;
             }
 
-            if (string.IsNullOrEmpty(isbn) && string.IsNullOrEmpty(issn) && string.IsNullOrEmpty(cnb)
-                && string.IsNullOrEmpty(oclc) && string.IsNullOrEmpty(ismn) && string.IsNullOrEmpty(urn)
-                && string.IsNullOrEmpty(custom))
-            {
-                MessageBoxDialogWindow.Show("Žádný identifikátor",
-                    "Vyplňte alespoň jeden identifikátor." + Environment.NewLine + error,
-                    "OK", MessageBoxDialogWindow.Icons.Error);
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(this.titleTextBox.Text) && string.IsNullOrWhiteSpace(this.partTitleTextBox.Text))
-            {
-                MessageBoxDialogWindow.Show("Žádný název",
-                    "Název musí být vyplněn." + Environment.NewLine + error,
-                    "OK", MessageBoxDialogWindow.Icons.Error);
-                return;
-            }
-
-            if ((string.IsNullOrWhiteSpace(this.authorTextBox.Text) || string.IsNullOrWhiteSpace(this.yearTextBox.Text))
-                && (string.IsNullOrWhiteSpace(this.partAuthorTextBox.Text) || string.IsNullOrWhiteSpace(this.partYearTextBox.Text))
-                && !Settings.DisableMissingAuthorYearNotification)
-            {
-                bool dontShowAgain;
-                var result = MessageBoxDialogWindow.Show("Chybí základní informace.",
-                    "Chybí autor nebo rok vydání. Opravdu chcete odeslat obálku bez toho?"
-                    + Environment.NewLine + error, out dontShowAgain, "Příště se neptat a odeslat",
-                    "Ano", "Ne", false, MessageBoxDialogWindow.Icons.Warning);
-                if (result != true)
-                {
-                    return;
-                }
-                if (dontShowAgain)
-                {
-                    Settings.DisableMissingAuthorYearNotification = true;
-                }
-            }
-
-            nvc.Add("title", isMonoPart ? this.titleTextBox.Text : this.partTitleTextBox.Text);
-            nvc.Add("authors", (isMonoPart ? this.authorTextBox.Text : this.partAuthorTextBox.Text) ?? "");
-            nvc.Add("year", this.yearTextBox.Text ?? "");
-            nvc.Add("ocr", (this.ocrCheckBox.IsChecked == true) ? "yes" : "no");
-            string partTitle = isMonoPart ? this.partTitleTextBox.Text : null;
-            string partAuthor = isMonoPart ? this.partAuthorTextBox.Text : null;
-            partYear = (isMonoPart || isSerial) ? this.partYearTextBox.Text : null;
-            string partVolume = isSerial ? this.partVolumeTextBox.Text : null;
-            if (partTitle != null) nvc.Add("part_title", partTitle);
-            if (partAuthor != null) nvc.Add("part_authors", partAuthor);
-            if (partYear != null) nvc.Add("part_year", partYear);
-            if (partVolume != null) nvc.Add("part_volume", partVolume);
-            if (partNo != null) nvc.Add("part_no", partNo);
-            if (partName != null) nvc.Add("part_name", partName);
-
-            // monography part, or serial identification
-            if (isSerial) nvc.Add("part_type", "serial");
-            if (isMonoPart) nvc.Add("part_type", "mono");
-
-            string metaXml = null;
-            /*
             string coverFileName = (this.coverGuid == Guid.Empty) ? null : this.imagesFilePaths[this.coverGuid];
             List<string> tocFileNames = new List<string>();
 
@@ -1889,35 +2248,20 @@ namespace CDArcha_klient
             // where to save local images copy
             String uploadDirName = DateTime.Now.ToString("yyyyMMdd");
             String mainIdentifier = DateTime.Now.ToString("HHmmss");
-            if (!string.IsNullOrEmpty(partIsbn)) mainIdentifier = partIsbn;
-            else if (!string.IsNullOrEmpty(isbn)) mainIdentifier = isbn;
-            else if (!string.IsNullOrEmpty(partIsmn)) mainIdentifier = partIsmn;
-            else if (!string.IsNullOrEmpty(ismn)) mainIdentifier = ismn;
-            else if (!string.IsNullOrEmpty(issn)) mainIdentifier = issn;
-            else if (!string.IsNullOrEmpty(partCnb)) mainIdentifier = partCnb;
-            else if (!string.IsNullOrEmpty(cnb)) mainIdentifier = cnb;
-            else if (!string.IsNullOrEmpty(partUrn)) mainIdentifier = partUrn;
-            else if (!string.IsNullOrEmpty(urn)) mainIdentifier = urn;
-            else if (!string.IsNullOrEmpty(partOclc)) mainIdentifier = partOclc;
-            else if (!string.IsNullOrEmpty(oclc)) mainIdentifier = oclc;
-            else if (!string.IsNullOrEmpty(partCustom)) mainIdentifier = partCustom;
-            else if (!string.IsNullOrEmpty(custom)) mainIdentifier = Settings.Sigla + '-' + custom;
             uploadDirName = uploadDirName + '_' + mainIdentifier;
-            
+
             String localUploadDir = Settings.ScanOutputDir;
             localUploadDir = System.IO.Path.Combine(localUploadDir, uploadDirName);
             if (Settings.EnableLocalImageCopy && !System.IO.Directory.Exists(localUploadDir))
             {
                 System.IO.Directory.CreateDirectory(localUploadDir);
             }
-            */
 
-            /*okcz
             //cover
             if (this.coverGuid == Guid.Empty && !Settings.DisableWithoutCoverNotification)
             {
                 bool dontShowAgain;
-                var result = MessageBoxDialogWindow.Show("Chybí obálka.", "Opravdu chcete odeslat data bez obálky?",
+                var result = MessageBoxDialogWindow.Show("Chybí obálka.", "Opravdu chcete odeslat data bez obálky ?",
                     out dontShowAgain, "Příště se neptat a odeslat", "Ano", "Ne", false,
                     MessageBoxDialogWindow.Icons.Warning);
                 if (result != true)
@@ -1940,7 +2284,7 @@ namespace CDArcha_klient
                 if (!Settings.DisableWithoutTocNotification)
                 {
                     bool dontShowAgain;
-                    var result = MessageBoxDialogWindow.Show("Chybí obsah", "Opravdu chcete odeslat data bez obsahu?",
+                    var result = MessageBoxDialogWindow.Show("Chybí obsah/booklet", "Opravdu chcete odeslat data bez obsahu/bookletu ?",
                         out dontShowAgain, "Příště se neptat a odeslat", "Ano", "Ne", false,
                         MessageBoxDialogWindow.Icons.Warning);
                     if (result != true)
@@ -1974,20 +2318,15 @@ namespace CDArcha_klient
                     }
                 }
             }
-            */
+
+            string metaXml = null;
 
             //metastream
             try
             {
-                XElement userElement = new XElement("user", Settings.UserName);
-                XElement siglaElement = new XElement("sigla", Settings.Sigla);
-
-                XElement clientElement = new XElement("client");
-                XElement clientNameElement = new XElement("name", "CDArcha_klient");
-                XElement clientVersionElement = new XElement("version", Assembly.GetEntryAssembly().GetName().Version);
                 IPHostEntry host;
-                string localIPv4 = "?";
-                string localIPv6 = "?";
+                string localIPv4 = "";
+                string localIPv6 = "";
                 host = Dns.GetHostEntry(Dns.GetHostName());
                 foreach (IPAddress ip in host.AddressList)
                 {
@@ -2000,253 +2339,240 @@ namespace CDArcha_klient
                         localIPv6 = ip.ToString();
                     }
                 }
-                XElement clientIpv4Address = new XElement("local-IPv4-address", localIPv4);
-                XElement clientIpv6Address = new XElement("local-IPv6-address", localIPv6);
-                clientElement.Add(clientNameElement);
-                clientElement.Add(clientVersionElement);
-                clientElement.Add(clientIpv4Address);
-                clientElement.Add(clientIpv6Address);
 
-                XElement rootElement = new XElement("meta");
-                rootElement.Add(siglaElement);
-                rootElement.Add(userElement);
-                rootElement.Add(clientElement);
+                bool isMono = this.generalRecord is Monograph ? true : false;
+                bool isMonoPart = (isMono && this.unionTabVisible) ? true : false;
+                string title = isMonoPart ? this.titleTextBox.Text : this.partTitleTextBox.Text;
 
-                if (this.coverGuid != Guid.Empty)
-                {
-                    XElement coverElement = new XElement("cover");
-                    rootElement.Add(coverElement);
-                }
-                if (this.tocImagesList.Items.Count > 0)
-                {
-                    XElement tocElement = new XElement("toc");
-                    tocElement.Add(new XElement("pages", this.tocImagesList.Items.Count));
-                    rootElement.Add(tocElement);
-                }
-                
+                XNamespace mets = "http://www.loc.gov/METS/";
+                XNamespace mix = "http://www.loc.gov/mix/v20";
+                XElement metsRoot = new XElement("mets",
+                    new XAttribute(XNamespace.Xmlns + "mets", mets),
+                    new XAttribute("aes57", "http://www.aes.org/publications/standards/search.cfm?docID=84"),
+                    new XAttribute("premis", "info:lc/xmlns/premis-v2"),
+                    new XAttribute("xsi", "http://www.w3.org/2001/XMLSchema-instance"),
+                    new XAttribute("mods", "http://www.loc.gov/mods/v3"),
+                    new XAttribute("oai_dc", "http://www.openarchives.org/OAI/2.0/oai_dc/"),
+                    new XAttribute("dc", "http://purl.org/dc/elements/1.1/"),
+                    new XAttribute("xlink", "http://www.w3.org/1999/xlink"),
+                    new XAttribute("LABEL", title),
+                    new XAttribute("schemaLocation", "http://www.w3.org/2001/XMLSchema-instance http://www.w3.org/2001/XMLSchema.xsd http://www.loc.gov/METS/ http://www.loc.gov/standards/mets/mets.xsd http://www.aes.org/standards/schemas/aes57-2011-08-27.xsd info:lc/xmlns/premis-v2 http://www.loc.gov/standards/premis/premis.xsd"),
+                    new XElement(mets + "metsHdr",
+                        new XAttribute("CREATEDATE", DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ssZ")),
+                        new XAttribute("ID", "###uuid###"),
+                        new XElement(mets + "agent",
+                            new XAttribute("ROLE", "CREATOR"),
+                            new XAttribute("TYPE", "ORGANIZATION"),
+                            new XElement(mets + "name", "###organization###")
+                        )
+                    ),
+                    new XElement(mets + "structMap",
+                        new XAttribute("TYPE", "PHYSICAL"),
+                        new XElement(mets + "div",
+                            new XAttribute("TYPE", "DATACOLLECTION"),
+                            new XElement(mets + "fptr",
+                                new XAttribute("FILEID", "###filename###")
+                            )
+                        )
+                    ),
+                    new XElement(mets + "mdWrap",
+                        new XAttribute("MDTYPE", "NISOIMG"),
+                        new XAttribute("MIMETYPE", "text/xml"),
+                        new XElement(mets + "xmlData",
+                            new XElement("mix",
+                                new XAttribute(XNamespace.Xmlns + "mix", mix),
+                                new XElement(mix + "user", Settings.UserName),
+                                new XElement(mix + "sigla", Settings.Sigla),
+                                new XElement(mix + "client",
+                                    new XElement(mix + "name", "CDArcha_klient"),
+                                    new XElement(mix + "version", Assembly.GetEntryAssembly().GetName().Version),
+                                    new XElement(mix + "local-IPv4-address", localIPv4),
+                                    new XElement(mix + "local-IPv6-address", localIPv6)
+                                )
+                            )
+                        )
+                    )
+                );
+
                 XDocument xmlDoc = new XDocument(
-                new XDeclaration("1.0", "utf-8", "yes"), rootElement);
+                new XDeclaration("1.0", "utf-8", "yes"), metsRoot);
                 metaXml = xmlDoc.ToString();
             }
             catch (Exception)
             {
-                MessageBoxDialogWindow.Show("Chybný metasoubor", "Nastala chyba při tvorbě metasouboru, oznamte to prosím autorovi programu.",
+                MessageBoxDialogWindow.Show("Chybný metasoubor", "Nastala chyba při tvorbě metasouboru.",
                         "OK", MessageBoxDialogWindow.Icons.Error);
                 return;
             }
 
             UploadParameters param = new UploadParameters();
-            param.Url = Settings.ImportLink;
+            param.Url = Settings.UploadCoverLink;
             param.Nvc = nvc;
-
-            /*okcz
-            param.TocFilePaths = tocFileNames;
-            param.CoverFilePath = coverFileName;
-            */
             param.MetaXml = metaXml;
 
-            // transformace MARCXML na MODS
-            MetadataRetriever.transformMARC2MODS();
-            string marcXmlPath = System.IO.Path.Combine(Settings.TmpDir, "marcxml.xml");
-            string modsPath = System.IO.Path.Combine(Settings.TmpDir, "mods.xml");
-            if (File.Exists(marcXmlPath))
-            {
-                param.MarcXml = File.ReadAllText(marcXmlPath);
-            }
-            if (File.Exists(modsPath))
-            {
-                param.MetaMods = File.ReadAllText(modsPath);
-            }
+            param.TocFilePaths = tocFileNames;
+            param.CoverFilePath = coverFileName;
 
             //DEBUGLOG.AppendLine("SendToObalkyKnih part1: Total time: " + sw.ElapsedMilliseconds);
-            this.uploaderBackgroundWorker.RunWorkerAsync(param);
+            this.uploaderCoverTocBackgroundWorker.RunWorkerAsync(param);
 
             controlTabItem.IsEnabled = true;
             tabControl.SelectedItem = controlTabItem;
         }
 
-
         // Method for uploading multipart/form-data
         // url where will be data posted, login, password
-        //private void UploadFilesToRemoteUrl(string url, string coverFileName, List<string> tocFileNames, List<string> authFileNames, string metaXml, NameValueCollection nvc, DoWorkEventArgs e)
-        private void UploadFilesToRemoteUrl(string url, NameValueCollection nvc, string metaXml, string marcXml, string metaMods, DoWorkEventArgs e)
+        private void UploadCoverTocFilesToRemoteUrl(string url, NameValueCollection nvc, string MetaXml, string coverFileName, List<string> tocFileNames, DoWorkEventArgs e)
         {
-            //Stopwatch sw = new Stopwatch();
-            //sw.Start();
-            // Check version
-            UpdateChecker updateChecker = new UpdateChecker();
-            updateChecker.RetrieveUpdateInfo();
-            if (!updateChecker.IsSupportedVersion)
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                throw new WebException("Používáte nepodporovanou verzi programu. Aktualizujte ho.",
-                    WebExceptionStatus.ProtocolError);
-            }
+                logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Vytváří se multipart/form-data request pro zaslání obálky a obsahu/bookletu.\r");
+            }));
 
-            HttpWebRequest requestToServer = (HttpWebRequest)WebRequest.Create(url);
-            requestToServer.Timeout = 10000;
-
-            // Define a boundary string
-            string boundaryString = "----CDArchaFormBoundary" + DateTime.Now.Ticks.ToString("x");
-
-            // Turn off the buffering of data to be written, to prevent OutOfMemoryException when sending data
-            requestToServer.SendChunked = true;
-            requestToServer.AllowWriteStreamBuffering = false;
-            // Specify that request is a HTTP post
-            requestToServer.Method = WebRequestMethods.Http.Post;
-            // Specify that the content type is a multipart request
-            requestToServer.ContentType = "multipart/form-data; boundary=" + boundaryString;
-
-
-            UTF8Encoding utf8 = new UTF8Encoding();
-            string boundaryStringLine = "--" + boundaryString + "\r\n";
-            
-            string lastBoundaryStringLine = "--" + boundaryString + "--";
-            byte[] lastBoundaryStringLineBytes = utf8.GetBytes(lastBoundaryStringLine);
-
-
-            // TEXT PARAMETERS
-            string formDataString = "";
-            foreach (string key in nvc.Keys)
+            try
             {
-                formDataString += boundaryStringLine 
+                HttpWebRequest requestToServer = (HttpWebRequest)WebRequest.Create(url);
+
+                requestToServer.Timeout = 10000;
+
+                // Define a boundary string
+                string boundaryString = "CDArchaFormBoundary" + DateTime.Now.Ticks.ToString("x");
+
+                // Turn off the buffering of data to be written, to prevent OutOfMemoryException when sending data
+                requestToServer.SendChunked = true;
+                requestToServer.AllowWriteStreamBuffering = false;
+                // Specify that request is a HTTP post
+                requestToServer.Method = WebRequestMethods.Http.Post;
+                // Specify that the content type is a multipart request
+                requestToServer.ContentType = "multipart/mixed; boundary=" + boundaryString;
+
+                UTF8Encoding utf8 = new UTF8Encoding();
+                string boundaryStringLine = "--" + boundaryString + "\r\n";
+
+                string lastBoundaryStringLine = "\r\n--" + boundaryString + "--";
+                byte[] lastBoundaryStringLineBytes = utf8.GetBytes(lastBoundaryStringLine);
+
+                // TEXT PARAMETERS
+                string formDataString = "";
+                foreach (string key in nvc.Keys)
+                {
+                    formDataString += boundaryStringLine
+                        + String.Format(
+                        "Content-Disposition: form-data; name=\"{0}\"; filename=\"{0}\"\r\nContent-Type: text/plain\r\n\r\n{1}\r\n",
+                        key, nvc[key]);
+                }
+                byte[] formDataBytes = utf8.GetBytes(formDataString);
+
+                // COVER PARAMETER
+                long coverSize = 0;
+                string coverDescriptionString = boundaryStringLine
                     + String.Format(
-                "Content-Disposition: form-data; name=\"{0}\"; filename=\"{0}\"\r\nContent-Type: text/plain\r\n\r\n{1}\r\n",
-                key,
-                nvc[key]);
-            }
-            byte[] formDataBytes = utf8.GetBytes(formDataString);
+                    "Content-Disposition: form-data; name=\"{0}\"; "
+                    + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
+                    "cover", "cover.tif", "image/tif");
+                byte[] coverDescriptionBytes = utf8.GetBytes(coverDescriptionString);
 
-
-            // COVER PARAMETER
-            /*okcz
-            long coverSize = 0;
-            string coverDescriptionString = boundaryStringLine
-                + String.Format(
-                "Content-Disposition: form-data; name=\"{0}\"; "
-                 + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
-                "cover", "cover.tif", "image/tif");
-            byte[] coverDescriptionBytes = utf8.GetBytes(coverDescriptionString);
-            
-            if (coverFileName != null)
-            {
-                FileInfo fileInfo = new FileInfo(coverFileName);
-                coverSize = fileInfo.Length + coverDescriptionBytes.Length;
-            }
-            
-
-            // TOC PARAMETERS
-            int counter = 1;
-            Dictionary<string, byte[]> tocDescriptionsDictionary = new Dictionary<string, byte[]>();
-            long tocSize = 0;
-            foreach (var fileName in tocFileNames)
-            {
-                string tocDescription = boundaryStringLine
-                    + String.Format(
-                "Content-Disposition: form-data; name=\"{0}\"; "
-                 + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
-                "toc_page_" + counter, "toc_page_" + counter + ".tif", "image/tif");
-                byte[] tocDescriptionBytes = utf8.GetBytes(tocDescription);
-
-                FileInfo fi = new FileInfo(fileName);
-                tocSize += fi.Length + tocDescriptionBytes.Length;
-
-                tocDescriptionsDictionary.Add(fileName, tocDescriptionBytes);
-                counter++;
-            }
-            */
-
-            // META PARAMETER
-            string metaDataString = boundaryStringLine
-                + String.Format(
-                "Content-Disposition: form-data; name=\"{0}\"; "
-                + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
-                "meta", "meta.xml", "text/xml")
-                + metaXml + "\r\n";
-            byte[] metaDataBytes = utf8.GetBytes(metaDataString);
-
-            // MARC XML
-            string marcXmlString = boundaryStringLine
-                + String.Format(
-                "Content-Disposition: form-data; name=\"{0}\"; "
-                + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
-                "marcxml", "marcxml.xml", "text/xml")
-                + marcXml + "\r\n";
-            byte[] marcXmlBytes = utf8.GetBytes(marcXmlString);
-
-            // MODS
-            string metaModsString = boundaryStringLine
-                + String.Format(
-                "Content-Disposition: form-data; name=\"{0}\"; "
-                + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
-                "mods", "mods.xml", "text/xml")
-                + metaMods + "\r\n";
-            byte[] metaModsBytes = utf8.GetBytes(metaModsString);
-
-            // Calculate the total size of the HTTP request
-            long totalRequestBodySize =
-                + lastBoundaryStringLineBytes.Length
-                + formDataBytes.Length
-                //+ coverSize
-                //+ tocSize
-                + metaDataBytes.Length
-                + marcXmlBytes.Length
-                + metaModsBytes.Length;
-
-            // And indicate the value as the HTTP request content length
-            requestToServer.ContentLength = totalRequestBodySize;
-
-
-            // Write the http request body directly to the server
-            using (Stream s = requestToServer.GetRequestStream())
-            {
-                // Send text parameters
-                s.Write(formDataBytes, 0, formDataBytes.Length);
-
-                /*okcz
-                // Send cover
                 if (coverFileName != null)
                 {
-                    s.Write(coverDescriptionBytes, 0,
-                        coverDescriptionBytes.Length);
-
-                    byte[] buffer = File.ReadAllBytes(coverFileName);
-                    s.Write(buffer, 0, buffer.Length);
+                    FileInfo fileInfo = new FileInfo(coverFileName);
+                    coverSize = fileInfo.Length + coverDescriptionBytes.Length;
                 }
 
-                // Send toc
-                foreach (var tocRecord in tocDescriptionsDictionary)
+                // TOC PARAMETERS
+                int counter = 1;
+                Dictionary<string, byte[]> tocDescriptionsDictionary = new Dictionary<string, byte[]>();
+                long tocSize = 0;
+                foreach (var fileName in tocFileNames)
                 {
-                    GC.Collect();
+                    string tocDescription = "\r\n" + boundaryStringLine
+                        + String.Format(
+                        "Content-Disposition: form-data; name=\"{0}\"; "
+                        + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
+                        "toc_page_" + counter, "toc_page_" + counter + ".tif", "image/tif");
+                    byte[] tocDescriptionBytes = utf8.GetBytes(tocDescription);
 
-                    byte[] buffer = File.ReadAllBytes(tocRecord.Key);
-                    s.Write(tocRecord.Value, 0, tocRecord.Value.Length);
-                    s.Write(buffer, 0, buffer.Length);
+                    FileInfo fi = new FileInfo(fileName);
+                    tocSize += fi.Length + tocDescriptionBytes.Length;
+
+                    tocDescriptionsDictionary.Add(fileName, tocDescriptionBytes);
+                    counter++;
                 }
-                */
 
-                // Send meta
-                s.Write(metaDataBytes, 0, metaDataBytes.Length);
+                // META PARAMETER
+                string metaDataString = boundaryStringLine
+                    + String.Format(
+                    "Content-Disposition: form-data; name=\"{0}\"; "
+                    + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
+                    "meta", "meta.xml", "text/xml")
+                    + MetaXml + "\r\n";
+                byte[] metaDataBytes = utf8.GetBytes(metaDataString);
 
-                // Send MarcXML
-                s.Write(marcXmlBytes, 0, marcXmlBytes.Length);
 
-                // Send MODS
-                s.Write(metaModsBytes, 0, metaModsBytes.Length);
+                // Calculate the total size of the HTTP request
+                long totalRequestBodySize =
+                    lastBoundaryStringLineBytes.Length
+                    + formDataBytes.Length
+                    + coverSize
+                    + tocSize
+                    + formDataBytes.Length;
 
-                // Send the last part of the HTTP request body
-                s.Write(lastBoundaryStringLineBytes, 0, lastBoundaryStringLineBytes.Length);
+                // And indicate the value as the HTTP request content length
+                requestToServer.ContentLength = totalRequestBodySize;
+
+
+                // Write the http request body directly to the server
+                using (Stream s = requestToServer.GetRequestStream())
+                {
+                    // Send text parameters
+                    s.Write(formDataBytes, 0, formDataBytes.Length);
+
+                    // Send cover
+                    if (coverFileName != null)
+                    {
+                        s.Write(coverDescriptionBytes, 0,
+                            coverDescriptionBytes.Length);
+
+                        byte[] buffer = File.ReadAllBytes(coverFileName);
+                        s.Write(buffer, 0, buffer.Length);
+                    }
+
+                    // Send toc
+                    foreach (var tocRecord in tocDescriptionsDictionary)
+                    {
+                        GC.Collect();
+
+                        byte[] buffer = File.ReadAllBytes(tocRecord.Key);
+                        s.Write(tocRecord.Value, 0, tocRecord.Value.Length);
+                        s.Write(buffer, 0, buffer.Length);
+                    }
+
+                    // Send meta
+                    s.Write(metaDataBytes, 0, metaDataBytes.Length);
+
+                    // Send the last part of the HTTP request body
+                    s.Write(lastBoundaryStringLineBytes, 0, lastBoundaryStringLineBytes.Length);
+                }
+
+                //DEBUGLOG.AppendLine("UploadFilesToRemoteUrl (upload data): Total time: " + sw.ElapsedMilliseconds);
+
+                // Grab the response from the server. WebException will be thrown
+                // when a HTTP OK status is not returned
+                tocDescriptionsDictionaryToDelete = tocDescriptionsDictionary;
+                coverFileNameToDelete = coverFileName;
+
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Zasílání obálky a obsahu/bookletu.\r");
+                }));
+
+                WebResponse response = requestToServer.GetResponse();
+                StreamReader responseReader = new StreamReader(response.GetResponseStream());
+                e.Result = responseReader.ReadToEnd();
+                response.Close();
+                requestToServer.Abort();
+                //DEBUGLOG.AppendLine("UploadFilesToRemoteUrl: Total time: " + sw.ElapsedMilliseconds);
             }
-
-            //DEBUGLOG.AppendLine("UploadFilesToRemoteUrl (upload data): Total time: " + sw.ElapsedMilliseconds);
-
-            // Grab the response from the server. WebException will be thrown
-            // when a HTTP OK status is not returned
-            /*okcz tocDescriptionsDictionaryToDelete = tocDescriptionsDictionary;*/
-            /*okcz coverFileNameToDelete = coverFileName; */
-            WebResponse response = requestToServer.GetResponse();
-            StreamReader responseReader = new StreamReader(response.GetResponseStream());
-            e.Result = responseReader.ReadToEnd();
-            //DEBUGLOG.AppendLine("UploadFilesToRemoteUrl: Total time: " + sw.ElapsedMilliseconds);
+            catch (Exception ex) { }
         }
 
         private BitmapImage getIconSource(string uri)
@@ -2258,39 +2584,16 @@ namespace CDArcha_klient
             return newIcon;
         }
 
-        // Uploads files to obalkyknih in new thread
+        // Uploads files to cdarcha server in new thread
         private void UploaderBW_DoWork(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker worker = sender as BackgroundWorker;
             UploadParameters up = e.Argument as UploadParameters;
             if (!Settings.offlineMode)
             {
-                //UploadFilesToRemoteUrl(up.Url, up.CoverFilePath, up.TocFilePaths, up.MetaXml, up.Nvc, e);
                 UploadFilesToRemoteUrl(up.Url, up.Nvc, up.MetaXml, up.MarcXml, up.MetaMods, e);
-                this.tmpMediaId = (e.Result as string) ?? "";
-            }
-
-            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
-                this.stepIcon1.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-done.png");
-                if (Settings.offlineMode)
-                {
-                    this.stepIcon1.Visibility = Visibility.Visible;
-                }
-                this.stepIcon2.Visibility = Visibility.Visible;
-                this.stepIcon2.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-hourglass.png");
-            }));
-
-            //Create ISO
-            IsoFromMedia iso = new IsoFromMedia();
-            iso.OnFinish += new IsoEventHandler(iso_OnFinish);
-            iso.OnMessage += new IsoEventHandler(iso_OnMessage);
-            iso.OnProgress += new IsoEventHandler(iso_OnProgress);
-
-            IsoState status = iso.CreateIsoFromMedia(@selectedDriveName, @Settings.tmpPathToIso);
-            if (status != IsoState.Running)
-            {
-                iso.Stop();
-                MessageBoxDialogWindow.Show("Oznam", "Vytváření ISO selhalo.", "OK", MessageBoxDialogWindow.Icons.Error);
+                this.workingMediaId = (e.Result as string) ?? "";
+                this.lastWorkingMediaId = this.workingMediaId;
             }
         }
 
@@ -2325,12 +2628,24 @@ namespace CDArcha_klient
                         message = (e.Error as WebException).Status + ": " + e.Error.Message;
                     }
                     MessageBoxDialogWindow.Show("Odesílání neúspěšné", message, "OK", MessageBoxDialogWindow.Icons.Error);
+
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        this.stepIcon1.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-warning.png");
+                        logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Odesílání neúspěšné.\r");
+                    }));
                 }
                 else
                 {
                     MessageBoxDialogWindow.Show("Chyba odesílání",
                         "Počas odesílání nastala neznámá výjimka, je možné, že data nebyla odeslána.",
                         "OK", MessageBoxDialogWindow.Icons.Error);
+
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        this.stepIcon1.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-warning.png");
+                        logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Počas odesílání nastala neznámá výjimka, je možné, že data nebyla odeslána.\r");
+                    }));
                 }
             }
             else if (!e.Cancelled && !Settings.offlineMode)
@@ -2342,14 +2657,140 @@ namespace CDArcha_klient
                     MessageBoxDialogWindow.Show("Zpracování nepotvrzené",
                         "Server nepotvrdil zpracování dat. Je možné, že data nebyla zpracována správně." + response,
                         "OK", MessageBoxDialogWindow.Icons.Warning);
+
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        this.stepIcon1.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-warning.png");
+                        logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Server nepotvrdil zpracování dat.Je možné, že data nebyla zpracována správně. " + response + "\r");
+                    }));
                 }
                 else
                 {
                     // Prave uploadnute 
-                    this.tmpMediaId = response;
+                    this.workingMediaId = response;
+                    this.lastWorkingMediaId = this.workingMediaId;
 
+                    FillControlMetadata();
+                    this.controlTabItem.IsEnabled = true;
+                    this.tabControl.SelectedItem = this.controlTabItem;
+
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        this.stepIcon1.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-done.png");
+                        if (Settings.offlineMode)
+                        {
+                            this.stepIcon1.Visibility = Visibility.Visible;
+                        }
+                        this.stepIcon2.Visibility = Visibility.Visible;
+                        this.stepIcon2.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-hourglass.png");
+
+                        // progress // log
+                        logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Odesílání identifikátorů záznamu a metadat úspěšné.\r");
+                        logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Vytváření ISO na lokálny PC.\r");
+                    }));
+
+                    //Create ISO
+                    IsoFromMedia iso = new IsoFromMedia();
+                    iso.OnFinish += new IsoEventHandler(iso_OnFinish);
+                    iso.OnMessage += new IsoEventHandler(iso_OnMessage);
+                    iso.OnProgress += new IsoEventHandler(iso_OnProgress);
+
+                    IsoState status = iso.CreateIsoFromMedia(@selectedDriveName, @Settings.tmpPathToIso);
+                    if (status != IsoState.Running)
+                    {
+                        iso.Stop();
+                        MessageBoxDialogWindow.Show("Oznam", "Vytváření ISO selhalo.", "OK", MessageBoxDialogWindow.Icons.Error);
+                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                        {
+                            logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Vytváření ISO selhalo.\r");
+                        }));
+                    }
+                }
+            }
+        }
+
+        // Uploads cover + toc
+        private void UploaderCoverTocBW_DoWork(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker worker = sender as BackgroundWorker;
+            UploadParameters up = e.Argument as UploadParameters;
+            if (!Settings.offlineMode)
+            {
+                UploadCoverTocFilesToRemoteUrl(up.Url, up.Nvc, up.MetaXml, up.CoverFilePath, up.TocFilePaths, e);
+            }
+        }
+
+        // Shows result of uploading process (OK or error message)
+        private void UploaderCoverTocBW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            this.zobrazitVysledek.Visibility = System.Windows.Visibility.Hidden;
+            if (e.Error != null)
+            {
+                scanningTabDoneIcon.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-ban.png");
+                this.scanningStartButton.Content = "Neúspěšné";
+                this.scanningStartButton.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF6C3131"));
+                if (e.Error is WebException)
+                {
+                    string message = "";
+                    if ((e.Error as WebException).Response != null)
+                    {
+                        HttpWebResponse response = (e.Error as WebException).Response as HttpWebResponse;
+                        if (response.StatusCode == HttpStatusCode.Unauthorized)
+                        {
+                            message = "Chyba autorizace: Přihlašovací údaje nejsou správné.";
+                        }
+                        else if (response.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            message = "Chyba na straně serveru: " + response.StatusDescription;
+                        }
+                        else
+                        {
+                            message = response.StatusCode + ": " + response.StatusDescription;
+                        }
+                    }
+                    else
+                    {
+                        message = (e.Error as WebException).Status + ": " + e.Error.Message;
+                    }
+                    MessageBoxDialogWindow.Show("Odesílání neúspěšné", message, "OK", MessageBoxDialogWindow.Icons.Error);
+
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Odesílání obálky a obsahu/bookletu neúspěšné.\r");
+                    }));
+                }
+                else
+                {
+                    MessageBoxDialogWindow.Show("Chyba odesílání",
+                        "Během odesílání nastala neznámá výjimka, je možné, že data nebyla odeslána.",
+                        "OK", MessageBoxDialogWindow.Icons.Error);
+
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Během odesílání nastala neznámá výjimka, je možné, že data nebyla odeslána.\r");
+                    }));
+                }
+            }
+            else if (!e.Cancelled && !Settings.offlineMode)
+            {
+                string response = (e.Result as string) ?? "";
+                if (string.IsNullOrEmpty(response))
+                {
+                    scanningTabDoneIcon.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-ban.png");
+                    this.scanningStartButton.Content = "Neúspěšné";
+                    this.scanningStartButton.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF6C3131"));
+                    MessageBoxDialogWindow.Show("Zpracování nepotvrzené",
+                        "Server nepotvrdil zpracování dat. Je možné, že data nebyla zpracována správně." + response,
+                        "OK", MessageBoxDialogWindow.Icons.Warning);
+
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Server nepotvrdil zpracování dat.Je možné, že data nebyla zpracována správně. " + response + "\r");
+                    }));
+                }
+                else
+                {
                     //delete sent files
-                    /*
                     foreach (var tocRecord in tocDescriptionsDictionaryToDelete)
                     {
                         GC.Collect();
@@ -2367,10 +2808,8 @@ namespace CDArcha_klient
                             File.Delete(coverFileNameToDelete);
                         }
                     }
-                    */
 
                     //remove working images and reset controls
-                    /*
                     tocPagesNumber.Content = "0 stran";
                     coverThumbnail.IsEnabled = false;
                     coverGuid = Guid.Empty;
@@ -2393,12 +2832,20 @@ namespace CDArcha_klient
                     this.selectedImageGuid = Guid.Empty;
                     this.selectedImage.Source = new BitmapImage(
                         new Uri("/CDArcha_klient;component/Images/default-icon.png", UriKind.Relative));
-                    */
 
                     FillControlMetadata();
                     this.controlTabItem.IsEnabled = true;
                     this.tabControl.SelectedItem = this.controlTabItem;
                     this.DownloadCoverAndToc();
+
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        // progress // log
+                        logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Odesílání obálky a obsahu/bookletu úspěšné.\r");
+                        scanningTabDoneIcon.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-done.png");
+                        this.scanningStartButton.Content = "Úspěšně odesláno";
+                        this.scanningStartButton.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF6BA62A"));
+                    }));
                 }
             }
         }
@@ -3218,7 +3665,7 @@ namespace CDArcha_klient
                     break;
                 case ImageTransforms.Deskew:
                     double skewAngle = ImageTools.GetDeskewAngle(this.selectedImage.Source as BitmapSource);
-                    this.workingImage = new KeyValuePair<Guid,BitmapSource>(guid,
+                    this.workingImage = new KeyValuePair<Guid, BitmapSource>(guid,
                         ImageTools.DeskewImage(this.workingImage.Value, skewAngle));
                     break;
                 case ImageTransforms.Crop:
@@ -3397,7 +3844,7 @@ namespace CDArcha_klient
             {
                 moveUpImage.Visibility = Visibility.Hidden;
             }
-            
+
 
             Image moveDownImage = new Image();
             moveDownImage.Name = "moveDownThumbnail";
@@ -3410,7 +3857,7 @@ namespace CDArcha_klient
             moveDownImage.Cursor = Cursors.Hand;
             moveDownImage.MouseLeftButtonDown += TocThumbnail_MoveDown;
             moveDownImage.Visibility = Visibility.Hidden;
-            
+
             Image moveIntoImage = new Image();
             moveIntoImage.Name = "moveIntoThumbnail";
             moveIntoImage.VerticalAlignment = VerticalAlignment.Top;
@@ -3533,7 +3980,7 @@ namespace CDArcha_klient
             Image moveUp = LogicalTreeHelper.FindLogicalNode(grid, "moveUpThumbnail") as Image;
             Image moveDown = LogicalTreeHelper.FindLogicalNode(grid, "moveDownThumbnail") as Image;
             Image moveInto = LogicalTreeHelper.FindLogicalNode(grid, "moveIntoThumbnail") as Image;
-            if(!grid.Equals(this.tocImagesList.Items.GetItemAt(0)))
+            if (!grid.Equals(this.tocImagesList.Items.GetItemAt(0)))
             {
                 moveUp.Visibility = Visibility.Visible;
             }
@@ -3586,7 +4033,7 @@ namespace CDArcha_klient
 
             EnableImageControllers();
             SetAppropriateCrop(Size.Empty, this.selectedImage.RenderSize, true);
-        }        
+        }
 
         // Sets selected TOC image from list of all TOC images
         private void TocThumbnail_MoveUp(object sender, MouseButtonEventArgs e)
@@ -3598,7 +4045,7 @@ namespace CDArcha_klient
             {
                 return;
             }
-            
+
             // get the grid
             var tmp = this.tocImagesList.Items.GetItemAt(selectedIndex);
             // move it
@@ -3657,7 +4104,7 @@ namespace CDArcha_klient
                 HideAllThumbnailControls();
                 SetTocThumbnailControls(selectedImageGuid);
             }
-            
+
         }
 
         private void TocThumbnail_DeleteNoRemove()
@@ -4009,10 +4456,10 @@ namespace CDArcha_klient
             {
                 // cover image was replaced, so put current cover to redo
                 if (this.imagesFilePaths.ContainsKey(this.workingImage.Key)
-                    &&this.coverGuid == this.workingImage.Key && this.coverGuid != Guid.Empty)
+                    && this.coverGuid == this.workingImage.Key && this.coverGuid != Guid.Empty)
                 {
-                   this.redoImage = new KeyValuePair<string, BitmapSource>
-                       (this.imagesFilePaths[guid], this.workingImage.Value);
+                    this.redoImage = new KeyValuePair<string, BitmapSource>
+                        (this.imagesFilePaths[guid], this.workingImage.Value);
                 }
 
                 // load backup to working image
@@ -4148,13 +4595,19 @@ namespace CDArcha_klient
             copyPercent.Content = "";
         }
 
-        // Sends to ObalkyKnih
+        // Start archivation
         private void SendButton_Click(object sender, RoutedEventArgs e)
         {
             this.tmpMediaHash = "";
-            this.tmpMediaId = "";
+            this.workingMediaId = "";
             clearGuiProgress();
             SendToObalkyKnih();
+        }
+
+        // Send cover,toc
+        private void SendCoverToc_Click(object sender, RoutedEventArgs e)
+        {
+            SendCoverToc();
         }
 
         // Creates hover effect for transormation controllers
@@ -4304,14 +4757,14 @@ namespace CDArcha_klient
 
         private void SignalLoadedBackup()
         {
-            this.redoImage = new KeyValuePair<string,BitmapSource>(null, null);
+            this.redoImage = new KeyValuePair<string, BitmapSource>(null, null);
             (Window.GetWindow(this) as MainWindow).ActivateUndo();
             (Window.GetWindow(this) as MainWindow).DeactivateRedo();
         }
         #endregion
 
         #region control tab controls
-        
+
         // Shows windows for barcode
         private void controlNewUnitButton_Click(object sender, RoutedEventArgs e)
         {
@@ -4325,6 +4778,7 @@ namespace CDArcha_klient
             discName.Content = "není vložené";
             discVolno.Content = "";
             discSize.Content = "";
+            closeArchive();
             (Window.GetWindow(this) as MainWindow).ShowNewUnitWindow();
         }
 
@@ -4740,11 +5194,6 @@ namespace CDArcha_klient
             var selected = this.multipartIdentifierOwn.SelectedIndex;
             if (selected == -1) return;
             this.partIsbnTextBox.Text = tmpRecord.listIdentifiers[selected].IdentifierCode;
-            //this.partNameTextBox.Text = tmpRecord.listIdentifiers[selected].IdentifierDescription;
-            if (multipartIdentifierOwn.IsDropDownOpen || multipartIdentifierUnion.IsDropDownOpen)
-            {
-                this.DownloadCoverAndToc();
-            }
         }
 
         private void multipartIdentifierUnion_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -4755,7 +5204,7 @@ namespace CDArcha_klient
             if (selected == -1) return;
             this.isbnTextBox.Text = tmpRecord.listIdentifiers[selected].IdentifierCode;
             if (selected > 0) showUnionTab();
-            this.checkboxMinorChanger( (bool)this.checkboxMinorPartName.IsChecked );
+            this.checkboxMinorChanger((bool)this.checkboxMinorPartName.IsChecked);
         }
 
         private void controlSameUnitButton_Click(object sender, RoutedEventArgs e)
@@ -4790,7 +5239,7 @@ namespace CDArcha_klient
             {
                 this.tocImagesList.SelectedIndex = i;
                 TocThumbnail_DeleteNoRemove();
-             //   TocThumbnail_Delete(null, null);
+                //   TocThumbnail_Delete(null, null);
             }
 
             // cleanup part info
@@ -4800,6 +5249,8 @@ namespace CDArcha_klient
 
         private void reloadCoverAndToc(object sender, RoutedEventArgs e)
         {
+            this.scanningStartButton.Content = "SKENOVAT";
+            this.scanningStartButton.Background = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FF6C3131"));
             this.DownloadCoverAndToc();
         }
 
@@ -4829,9 +5280,9 @@ namespace CDArcha_klient
 
         private void zobrazitVysledek_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(this.tmpMediaId) && !Settings.offlineMode)
+            if (!string.IsNullOrEmpty(this.workingMediaId) && !Settings.offlineMode)
             {
-                System.Diagnostics.Process.Start(Settings.ViewLink + "?media_id=" + this.tmpMediaId);
+                System.Diagnostics.Process.Start(Settings.ViewLink + "?media_id=" + this.workingMediaId);
             }
             else
             {
@@ -4841,7 +5292,7 @@ namespace CDArcha_klient
         }
         #endregion
 
-        private void loadMedia_Click(object sender, RoutedEventArgs e)
+        private async void loadMedia_Click(object sender, RoutedEventArgs e)
         {
             tmpQuickId = "";
             lastMediaInfo = null;
@@ -4857,6 +5308,7 @@ namespace CDArcha_klient
 
                 if (!driveInfo.IsReady)
                 {
+                    btnCreateWarning.Content = "Médium není načtené";
                     btnCreateWarning.Visibility = Visibility.Visible;
                     btnCreateWarningIcon.Visibility = Visibility.Visible;
                     mediaInfoExists.Visibility = Visibility.Hidden;
@@ -4865,7 +5317,7 @@ namespace CDArcha_klient
                     mediaInfoDateUpdate.Content = mediaInfoTitle.Content = mediaInfoAuthors.Content = mediaInfoYear.Content = mediaInfoSize.Content = discSize.Content = discVolno.Content = "";
                     return;
                 }
-                
+
                 foreach (ManagementObject queryObj in searcher.Get())
                 {
                     //Double size = Convert.ToDouble(queryObj["Size"]);
@@ -4901,12 +5353,7 @@ namespace CDArcha_klient
                     btnCreateWarningIcon.Visibility = Visibility.Hidden;
 
                     // ziskat informace o mediu ze serveru na zaklade rychleho ID media
-                    var http = (HttpWebRequest)WebRequest.Create(Settings.GetMediaLink + "/?quickid=" + tmpQuickId);
-                    http.Timeout = 5000;
-                    var response = http.GetResponse();
-                    var stream = response.GetResponseStream();
-                    var sr = new StreamReader(stream);
-                    var content = sr.ReadToEnd();
+                    var content = await GetData(Settings.GetMediaLink + "/?quickid=" + tmpQuickId);
 
                     lastMediaInfo = JsonConvert.DeserializeObject<GetmediaJsonObject>(content);
                     if (lastMediaInfo.size != null)
@@ -4916,7 +5363,7 @@ namespace CDArcha_klient
                         mediaInfoTitle.Content = lastMediaInfo.title;
                         mediaInfoAuthors.Content = lastMediaInfo.authors;
                         mediaInfoYear.Content = lastMediaInfo.year;
-                        mediaInfoSize.Content = (long.Parse(lastMediaInfo.size)/1000000) + " MB";
+                        mediaInfoSize.Content = (long.Parse(lastMediaInfo.size) / 1000000) + " MB";
                         mediaInfoReadProblem.Content = (lastMediaInfo.mediaReadProblem == "1" ? "Ano" : "Ne");
                     }
                     else
@@ -4937,10 +5384,17 @@ namespace CDArcha_klient
             bool start = false;
             if (tmpQuickId == "")
             {
+                btnCreateWarning.Content = "Médium není načtené";
                 btnCreateWarning.Visibility = Visibility.Visible;
                 btnCreateWarningIcon.Visibility = Visibility.Visible;
             }
-            else if (!tmpMediumReadProblem && mediaInfoExists.Visibility==Visibility.Visible)
+            else if (string.IsNullOrWhiteSpace(mediaNoTextBox.Text))
+            {
+                btnCreateWarning.Content = "Zadejte číslo disku";
+                btnCreateWarning.Visibility = Visibility.Visible;
+                btnCreateWarningIcon.Visibility = Visibility.Visible;
+            }
+            else if (!tmpMediumReadProblem && mediaInfoExists.Visibility == Visibility.Visible)
             {
                 bool dontShowAgain;
                 var result = MessageBoxDialogWindow.Show("Opakování přenosu",
@@ -4961,7 +5415,8 @@ namespace CDArcha_klient
             {
                 selectedDriveName = driveList.Text;
                 tmpMediaHash = "";
-                tmpMediaId = "";
+                workingMediaId = "";
+                hashCheckTryCount = 999;
                 clearGuiProgress();
                 SendToObalkyKnih();
             }
@@ -4974,6 +5429,9 @@ namespace CDArcha_klient
                 this.stepIcon2.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-done.png");
                 this.stepIcon3.Visibility = Visibility.Visible;
                 this.stepIcon3.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-hourglass.png");
+
+                // progress // log
+                this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Ukládání ISO úspěšné.\r");
             }));
 
             byte[] hashValue;
@@ -4984,16 +5442,28 @@ namespace CDArcha_klient
             {
                 try
                 {
-                    System.Security.Cryptography.SHA1CryptoServiceProvider oSHA1Hasher = new System.Security.Cryptography.SHA1CryptoServiceProvider();
+                    System.Security.Cryptography.MD5CryptoServiceProvider oMD5Hasher = new System.Security.Cryptography.MD5CryptoServiceProvider();
                     oFileStream = new System.IO.FileStream(Settings.tmpPathToIso, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite);
-                    hashValue = oSHA1Hasher.ComputeHash(oFileStream);
+                    hashValue = oMD5Hasher.ComputeHash(oFileStream);
                     oFileStream.Close();
 
                     this.tmpMediaHash = System.BitConverter.ToString(hashValue);
+
+                    // progress // log
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Kontrolní součet lokálního ISO souboru: " + this.tmpMediaHash.Replace("-", "").ToLower() + "\r");
+                    }));
                 }
                 catch (System.Exception ex)
                 {
-                    MessageBox.Show("Error while calculating SHA1 checksum: " + ex.Message);
+                    // progress // log
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
+                        this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Error while calculating SHA1 checksum: " + ex.Message + "\r");
+                    }));
+
+                    MessageBox.Show("Error while calculating MD5 checksum: " + ex.Message);
                     return;
                 }
             }
@@ -5007,12 +5477,24 @@ namespace CDArcha_klient
                 }
                 stepIcon4.Visibility = Visibility.Visible;
                 stepIcon4.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-hourglass.png");
+
+                // progress // log
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Výpočet kontrolního součtu ukončen.\r");
+                }));
             }));
 
             if (!Settings.offlineMode)
             {
+                // progress // log
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Odesílám ISO soubor na server.\r");
+                }));
+
                 // Poslat na server
-                doUploadIso(Settings.tmpPathToIso, this.tmpMediaId, this.tmpMediaHash);
+                doUploadIso(Settings.tmpPathToIso, this.workingMediaId, this.tmpMediaHash);
             }
             else
             {
@@ -5021,7 +5503,7 @@ namespace CDArcha_klient
             }
         }
 
-        private void doUploadIso(String pathToIso, String tmpMediaId, String tmpMediaHash)
+        private void doUploadIso(String pathToIso, String workingMediaId, String tmpMediaHash)
         {
             MediaSender ms = new MediaSender();
             ms.OnFinish += new SenderEventHandler(ms_OnFinish);
@@ -5029,10 +5511,16 @@ namespace CDArcha_klient
             ms.OnProgress += new SenderEventHandler(ms_OnProgress);
 
             //Upload ISO
-            SenderState status = ms.SendMediaToServer(pathToIso, Settings.ImportLink, this.tmpMediaId, this.tmpMediaHash, this.tmpQuickId, this.tmpMediumReadProblem, this.tmpForcedUpload);
+            SenderState status = ms.SendMediaToServer(pathToIso, Settings.ImportLink, this.workingMediaId, this.tmpMediaHash, this.tmpQuickId, this.tmpMediumReadProblem, this.tmpForcedUpload);
 
             if (status != SenderState.Running)
             {
+                // progress // log
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Upload ISO selhalo.\r");
+                }));
+
                 ms.Stop();
                 MessageBox.Show("Upload ISO selhalo.");
             }
@@ -5050,7 +5538,7 @@ namespace CDArcha_klient
                 this.copyProgress.Value = e.ProgressPercent;
                 this.copyPercent.Content = e.ProgressPercent.ToString() + "%";
                 this.copyTime.Content = e.ElapsedTime.ToString();
-                this.copySize.Content = Math.Round(e.WrittenSize/1000000.0).ToString() + " MB";
+                this.copySize.Content = Math.Round(e.WrittenSize / 1000000.0).ToString() + " MB";
             }));
         }
 
@@ -5088,6 +5576,10 @@ namespace CDArcha_klient
                 stepIcon5.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-hourglass.png");
                 step5Finish.Visibility = Visibility.Visible;
                 step5Finish.Content = "Čekám na dokončení na straně serveru: 60s";
+
+                // progress // log
+                this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Upload ISO ukončen.\r");
+                this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Čekám na výpočet kontrolního souboru na sevreru max 60s.\r");
             }));
 
             this.hashCheckTryCount = 0;
@@ -5095,70 +5587,117 @@ namespace CDArcha_klient
             if (!Settings.offlineMode)
             {
                 // Kontroluje spravnost kontrolneho suctu, pokud jsme ONLINE
-                hashCheckBackgroundWorker.WorkerSupportsCancellation = true;
-                hashCheckBackgroundWorker.DoWork += new DoWorkEventHandler(bgCheckHash_DoWork);
-                hashCheckBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgCheckHash_RunWorkerCompleted); //mark
                 hashCheckBackgroundWorker.RunWorkerAsync();
             }
             else
             {
+                // Koprujeme do docasneho uloziste
+                string dt = DateTime.Now.ToString("yyyyMMddHHmmss");
+                string destDir = System.IO.Path.Combine(Settings.TmpDir, dt);
+
                 // Jsme offline, zkopirujeme soubory do adresare a koncime
                 Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 {
                     stepIcon4.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-done.png");
                     stepIcon5.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-done.png");
                     step5Finish.Visibility = Visibility.Hidden;
+
+                    // progress // log
+                    this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Offline režim. Přesun ISO souboru do adresáře: " + destDir + "\r");
                 }));
-                // Koprujeme do docasneho uloziste
-                string dt = DateTime.Now.ToString("yyyyMMddHHmmss");
-                string destDir = System.IO.Path.Combine(Settings.TmpDir, dt);
+
                 System.IO.Directory.CreateDirectory(destDir);
                 System.IO.File.Move(Settings.tmpPathToIso, System.IO.Path.Combine(destDir, "media.iso"));
                 uploadProcesCompleted();
             }
         }
 
-        // Kontrola spravnosti kontrolneho suctu - posledny krok pri posielani media na server
-        private void bgCheckHash_DoWork(object sender, DoWorkEventArgs e)
+        // Ziskaj data z HTTP
+        async Task<string> GetData(String urlString)
         {
-            if (string.IsNullOrEmpty(this.tmpMediaId))
+            var url = new Uri(urlString);
+
+            try
+            {
+                var result = await httpClient.GetStringAsync(url);
+                string checkResult = result.ToString();
+                //httpClient.Dispose();
+                return checkResult;
+            }
+            catch (Exception ex)
+            {
+                string checkResult = "Error " + ex.ToString();
+                //httpClient.Dispose();
+                return checkResult;
+            }
+        }
+
+        public async Task<string> PostAsync(String urlString, String data)
+        {
+            var url = new Uri(urlString);
+
+            try
+            {
+                var httpClient = new HttpClient();
+                var response = await httpClient.PostAsync(url, new StringContent(data));
+                response.EnsureSuccessStatusCode();
+                string content = await response.Content.ReadAsStringAsync();
+                return content;
+            }
+            catch (Exception ex)
+            {
+                string checkResult = "Error " + ex.ToString();
+                return checkResult;
+            }
+        }
+
+        // Kontrola spravnosti kontrolneho suctu - posledny krok pri posielani media na server
+        private async void bgCheckHash_DoWork(object sender, DoWorkEventArgs e)
+        {
+            if (string.IsNullOrEmpty(this.workingMediaId))
             {
                 return;
             }
 
             if (!Settings.offlineMode)
             {
+                if (this.hashCheckTryCount >= 59)
+                {
+                    // max 60 pokusu = 60sec
+                    uploadProcesFailed();
+                    return;
+                }
+                this.hashCheckTryCount++;
+
+                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    int sec = 60 - this.hashCheckTryCount;
+                    step5Finish.Content = "Čekám na dokončení na straně serveru: " + sec + "s";
+
+                    // progress // log
+                    this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  " + step5Finish.Content.ToString() + "\r");
+                }));
+
+                var content = await GetData(Settings.ChecksumLink + "/?mediaid=" + this.workingMediaId);
+
                 try
                 {
-                    if (this.hashCheckTryCount > 60)
+                    if (string.IsNullOrEmpty(this.workingMediaId))
                     {
-                        // max 60 pokusu = 60sec
-                        uploadProcesFailed();
                         return;
                     }
-                    this.hashCheckTryCount++;
-
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
-                    {
-                        int sec = 60 - this.hashCheckTryCount;
-                        step5Finish.Content = "Čekám na dokončení na straně serveru: " + sec + "s";
-                    }));
-
-                    var http = (HttpWebRequest)WebRequest.Create(Settings.ChecksumLink + "/?mediaid=" + this.tmpMediaId);
-                    http.Timeout = 1000;
-                    var response = http.GetResponse();
-
-                    var stream = response.GetResponseStream();
-                    var sr = new StreamReader(stream);
-                    var content = sr.ReadToEnd();
-
                     GethashJsonObject responseObject = JsonConvert.DeserializeObject<GethashJsonObject>(content);
                     if (responseObject != null && responseObject.status == "ok")
                     {
+                        await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                        {
+                            // progress // log
+                            this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Kontrolní součet vypočtený serverem: " + responseObject.hash + "\n");
+                        }));
+
                         if (responseObject.hash == this.tmpMediaHash.Replace("-", "").ToLower())
                         {
                             // hotovo
-                            sr.Close();
                             uploadProcesCompleted();
                             this.hashCheckTryCount = 0;
                             return;
@@ -5176,9 +5715,6 @@ namespace CDArcha_klient
                         uploadProcesFailed();
                         return;
                     }
-
-                    sr.Close();
-                    Thread.Sleep(1000);
                 }
                 catch (Exception ex)
                 {
@@ -5189,19 +5725,12 @@ namespace CDArcha_klient
             else
             {
                 uploadProcesCompleted();
+                return;
             }
 
-        }
-
-        // Kontrola spravnosti kontrolneho suctu - posledny krok pri posielani media na server
-        private void bgCheckHash_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            // retry
+            Thread.Sleep(1000);
             if (this.hashCheckTryCount > 0 && this.hashCheckTryCount < 60)
             {
-                hashCheckBackgroundWorker.WorkerSupportsCancellation = true;
-                hashCheckBackgroundWorker.DoWork += new DoWorkEventHandler(bgCheckHash_DoWork);
-                hashCheckBackgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgCheckHash_RunWorkerCompleted); //mark
                 if (!hashCheckBackgroundWorker.IsBusy)
                 {
                     hashCheckBackgroundWorker.RunWorkerAsync();
@@ -5219,13 +5748,18 @@ namespace CDArcha_klient
 
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
+                // progress // log
+                this.stepIcon5.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-warning.png");
+                this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Proces archivace neúspěšný !\r");
+
                 bool dontShowAgain;
                 var result = MessageBoxDialogWindow.Show("Opakování přenosu",
                     "Proces archivace média selhal. Přejete si proces opakovat?", out dontShowAgain, null,
                     "Ano", "Ne", false, MessageBoxDialogWindow.Icons.Error);
                 if (result != false)
                 {
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
                         clearGuiProgress();
                         stepIcon1.Visibility = Visibility.Visible;
                         stepIcon2.Visibility = Visibility.Visible;
@@ -5236,12 +5770,13 @@ namespace CDArcha_klient
                         stepIcon3.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-done.png");
                         stepIcon4.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-hourglass.png");
                     }));
-                    doUploadIso(Settings.tmpPathToIso, this.tmpMediaId, this.tmpMediaHash);
+                    doUploadIso(Settings.tmpPathToIso, this.workingMediaId, this.tmpMediaHash);
                 }
                 else
                 {
                     //todo: ukonci archivaci tohoto media
-                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => {
+                    Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                    {
                         copyProgress.Value = 0;
                         stepIcon1.Visibility = Visibility.Hidden;
                         stepIcon2.Visibility = Visibility.Hidden;
@@ -5259,7 +5794,7 @@ namespace CDArcha_klient
         private void uploadProcesCompleted()
         {
             this.tmpMediaHash = "";
-            this.tmpMediaId = "";
+            this.workingMediaId = "";
 
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
@@ -5268,12 +5803,220 @@ namespace CDArcha_klient
                 controlTabDoneIcon.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-done.png");
                 zobrazitVysledek.Visibility = System.Windows.Visibility.Visible;
                 step5Finish.Visibility = Visibility.Hidden;
+                reloadArchiveList_Click(null, null);
+
+                // progress // log
+                this.logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Proces archivace úspěšně ukončen.\r");
             }));
         }
 
         private void TabsControlUserControl_Loaded(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void showLogLink_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (this.logTextBox.Visibility != Visibility.Visible)
+            {
+                this.logTextBox.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                this.logTextBox.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void quitApp(object sender, RoutedEventArgs e)
+        {
+            closeArchive();
+            System.Windows.Forms.Application.Exit();
+        }
+
+        private void chooseScanTab(object sender, RoutedEventArgs e)
+        {
+            scanningTabItem.IsEnabled = true;
+            tabControl.SelectedItem = scanningTabItem;
+        }
+
+        private void reloadArchiveList_Click(object sender, RoutedEventArgs e)
+        {
+            var identBuildTuple = this.identifiersBuild();
+            NameValueCollection nvc = identBuildTuple.Item2;
+            UploadParameters param = new UploadParameters();
+            DoWorkEventArgs res = new DoWorkEventArgs(null);
+            UploadFilesToRemoteUrl(Settings.GetAllMediaListLink, nvc, null, null, null, res);
+            archiveTree.Items.Clear();
+            mediaNoTextBox.Text = "";
+            archiveOp.Content = "";
+            archiveState.Content = "";
+
+            if (res.Result != null && !string.IsNullOrWhiteSpace(res.Result.ToString()))
+            {
+                List<JsonApiAllMedia> responseObject = JsonConvert.DeserializeObject<List<JsonApiAllMedia>>(res.Result.ToString());
+
+                TreeViewItem root = new TreeViewItem();
+
+                lastArchiveInfo = new List<JsonApiAllMedia>();
+                foreach (JsonApiAllMedia obj in responseObject)
+                {
+                    JsonApiAllMedia lastArchiveInfoItem = new JsonApiAllMedia();
+                    lastArchiveInfoItem.id = obj.id;
+                    lastArchiveInfoItem.type = obj.type;
+                    lastArchiveInfoItem.status = obj.status;
+                    lastArchiveInfoItem.mediaNo = obj.mediaNo;
+                    lastArchiveInfoItem.dtLastUpdate = obj.dtLastUpdate;
+                    lastArchiveInfoItem.text = obj.text;
+                    lastArchiveInfo.Add(lastArchiveInfoItem);
+
+                    if (obj.type == "archive")
+                    {
+                        root.Header = obj.text;
+                        root.Uid = obj.id;
+                        switch (obj.status) {
+                            case "0": archiveState.Content = "Rozpracovaný na klientovi"; break;
+                            case "1": archiveState.Content = "Ukončený na klientovi"; break;
+                            case "2": archiveState.Content = "Rozpracovaný na serveru"; break;
+                            case "3": archiveState.Content = "Připravený k archivaci"; break;
+                            case "4": archiveState.Content = "Archivovaný"; break;
+                        }
+                        if (obj.status != "0")
+                        {
+                            disableArchiveControls();
+                        } else
+                        {
+                            enableArchiveControls();
+                        }
+                    } else
+                    {
+                        TreeViewItem item = new TreeViewItem();
+                        item.Header = obj.text;
+                        item.Uid = obj.id;
+                        root.Items.Add(item);
+                    }
+                }
+
+                root.IsExpanded = true;
+                root.IsSelected = true;
+                archiveTree.Items.Add(root);
+            }
+            else
+            {
+                archiveOp.Content = "Archiv neexistuje a bude vytvořen s první archivací";
+                archiveState.Content = "Ještě neexistuje";
+            }
+        }
+
+        private void archiveTree_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            archiveOp.Content = "";
+            TreeViewItem sel = (TreeViewItem)this.archiveTree.SelectedItem;
+            if (sel != null && tabControl.SelectedItem == metadataTabItem)
+            {
+                this.lastWorkingMediaId = sel.Uid;
+                foreach (JsonApiAllMedia obj in lastArchiveInfo)
+                {
+                    if (obj.id == sel.Uid)
+                    {
+                        if (obj.type == "archive")
+                        {
+                            archiveOp.Content = "Můžete pokračovat v archivaci dalšího média archivu: " + sel.Uid;
+                            mediaNoTextBox.Text = "";
+                            scanArchiveItem.Content = "Skenovat obálku vybraného ARCHIVU";
+                        }
+                        else
+                        {
+                            archiveOp.Content = "Načteno médium: " + obj.mediaNo + ". Můžete archivaci média opakovat, nebo pokračovat v skenování.";
+                            mediaNoTextBox.Text = obj.mediaNo;
+                            scanArchiveItem.Content = "Skenovat obálku vybraného MÉDIA";
+                        }
+                    }
+                }
+            }
+        }
+
+        private void showArchiveItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(this.lastWorkingMediaId))
+            {
+                System.Diagnostics.Process.Start(Settings.ip + "/cdarcha/content/?id=" + this.lastWorkingMediaId);
+            }
+            else
+            {
+                MessageBox.Show("Není načten žádný záznam !");
+            }
+        }
+
+        private void scanArchiveItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(this.lastWorkingMediaId))
+            {
+                scanningTabItem.IsEnabled = true;
+                tabControl.SelectedItem = scanningTabItem;
+            } else
+            {
+                MessageBox.Show("Není načten žádný záznam !");
+            }
+        }
+
+        private void closeArchiveItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (!string.IsNullOrEmpty(this.lastWorkingMediaId))
+            {
+                archiveOp.Content = "Archiv byl označen jako ukončený.";
+                archiveState.Content = "Ukončen na klientovi";
+                closeArchive();
+                disableArchiveControls();
+            }
+            else
+            {
+                MessageBox.Show("Není načten žádný záznam archivu !");
+            }
+        }
+
+        private void closeArchive()
+        {
+            if (!string.IsNullOrEmpty(this.lastWorkingMediaId))
+            {
+                HttpWebRequest requestToServer = (HttpWebRequest)WebRequest.Create(Settings.CloseArchiveLink + this.lastWorkingMediaId);
+                requestToServer.Timeout = 10000;
+                requestToServer.Method = WebRequestMethods.Http.Get;
+                requestToServer.ContentType = "text/plain";
+                try
+                {
+                    WebResponse response = requestToServer.GetResponse();
+                    requestToServer.Abort();
+                    reloadArchiveList_Click(null, null);
+                    this.lastWorkingMediaId = null;
+                }
+                catch (Exception e) { }
+            }
+        }
+
+        private void disableArchiveControls()
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                loadMedia.IsEnabled = false;
+                btnCreate.IsEnabled = false;
+                closeArchiveItem.IsEnabled = false;
+                scanArchiveItem.IsEnabled = false;
+                driveList.IsEnabled = false;
+                mediaNoTextBox.IsEnabled = false;
+            }));
+        }
+
+        private void enableArchiveControls()
+        {
+            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                loadMedia.IsEnabled = true;
+                btnCreate.IsEnabled = true;
+                closeArchiveItem.IsEnabled = true;
+                scanArchiveItem.IsEnabled = true;
+                driveList.IsEnabled = true;
+                mediaNoTextBox.IsEnabled = true;
+            }));
         }
     }
 

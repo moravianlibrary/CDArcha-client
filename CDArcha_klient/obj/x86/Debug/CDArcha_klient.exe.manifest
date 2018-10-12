@@ -3,7 +3,7 @@
   <asmv1:assemblyIdentity name="CDArcha_klient.exe" version="0.1.0.1" publicKeyToken="0000000000000000" language="neutral" processorArchitecture="x86" type="win32" />
   <application />
   <entryPoint>
-    <assemblyIdentity name="CDArcha_klient" version="0.1.6660.2001" language="neutral" processorArchitecture="x86" />
+    <assemblyIdentity name="CDArcha_klient" version="0.1.6850.104" language="neutral" processorArchitecture="x86" />
     <commandLine file="CDArcha_klient.exe" parameters="" />
   </entryPoint>
   <trustInfo>
@@ -42,26 +42,26 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="CDArcha_klient.exe" size="624640">
-      <assemblyIdentity name="CDArcha_klient" version="0.1.6660.2001" language="neutral" processorArchitecture="x86" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="CDArcha_klient.exe" size="649728">
+      <assemblyIdentity name="CDArcha_klient" version="0.1.6850.104" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>a2T99q2b6v3Z3ysnw+7t68X17Sk=</dsig:DigestValue>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>gYl9ZDbYGXwBK+LYhNXr2zwrHF8+Jml491j4bb8Waag=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="CroppingAdorner.dll" size="16896">
-      <assemblyIdentity name="CroppingAdorner" version="1.1.6644.43102" language="neutral" processorArchitecture="x86" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="CroppingAdorner.dll" size="16384">
+      <assemblyIdentity name="CroppingAdorner" version="1.1.6828.12805" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>DQ0rxXKXoRrcODJYsDdmqPluuew=</dsig:DigestValue>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>TBiAZ+s4+ndnyxWP0Egqwj/UPapC2QJ48CRwHprned0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -72,8 +72,8 @@
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>GwuMHUUMsbGOZg5BJOiJHt9YZ8w=</dsig:DigestValue>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>zD5EhSbyP8NwbOLHUhQSEpTRjGemYE6eycICFz9qTKY=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -84,20 +84,20 @@
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>/OdJQlBQOb96bpOjcJ2mpxWMHxo=</dsig:DigestValue>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>btzX/2Wi1BZywPFUbwEX2NnyxYif26DjdmWjf/pCVS0=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SobekCM_Marc_Library.dll" size="41984">
-      <assemblyIdentity name="SobekCM_Marc_Library" version="1.1.6644.43103" language="neutral" processorArchitecture="x86" />
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="SobekCM_Marc_Library.dll" size="40448">
+      <assemblyIdentity name="SobekCM_Marc_Library" version="1.1.6828.12805" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>r00KIQ80ZLlGiX7FTMNz145jMxI=</dsig:DigestValue>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>NpvfD0rlBQytwTEfD7pdYACZXbM4iFRvGQjLJJnzfD4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -108,8 +108,8 @@
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>wrSIUJ+fDrZx491aE2xwnFaDj+k=</dsig:DigestValue>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>29f/dj9iDihE6dPFFf1P9n84Cl0mAy6vJfctW7loShM=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
@@ -120,18 +120,18 @@
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
-        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-        <dsig:DigestValue>Dr6hgtsr1GWAjf3qMeYvCz9D1Po=</dsig:DigestValue>
+        <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+        <dsig:DigestValue>Ur8tPMWEHe7Iw0gEYZm9hnn6447ZWW/ZH6L07lX8svU=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="CDArcha_klient.exe.config" size="207">
+  <file name="CDArcha_klient.exe.config" size="191">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
-      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1" />
-      <dsig:DigestValue>P+7j+GDPHH+y5vHdUusbySFFRi0=</dsig:DigestValue>
+      <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
+      <dsig:DigestValue>tnq26xVl8D7cMpJLRbKrKDOKymfhmg3d9P0aWUAcVPY=</dsig:DigestValue>
     </hash>
   </file>
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">

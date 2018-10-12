@@ -58,3 +58,16 @@ C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_M
 C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.dll
 C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.pdb
 C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csprojResolveAssemblyReference.cache
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\iconv.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxml2.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxslt.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\yaz.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\zlib1.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.YazSharp.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csprojResolveAssemblyReference.cache
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csproj.CoreCompileInputs.cache
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.pdb

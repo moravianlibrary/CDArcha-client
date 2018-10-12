@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Debug\
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Debug\
 CDArcha_klient
 none
 false
 DEBUG;TRACE
-C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\CDArcha_klient\App.xaml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\App.xaml
 13-1922793999
 
-381771654590
-20556254913
+42-1768418882
+22-1256390748
 AboutWindow.xaml;CreateNewUnionWindow.xaml;CreateNewUnitWindow.xaml;CredentialsWindow.xaml;HelpWindow.xaml;MainWindow.xaml;MessageBoxDialogWindow.xaml;MetadataWindow.xaml;MoveScannedPageWindow.xaml;SettingsWindow.xaml;TabsControl.xaml;UploadWindow.xaml;ExternalImageLoadWindow.xaml;
 
-True
+False
 

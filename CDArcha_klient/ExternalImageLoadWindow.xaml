@@ -11,12 +11,12 @@
                Source="/CDArcha_klient;component/Images/ok-empty.png" MouseLeftButtonDown="OnImage_Clicked" Cursor="Hand" />
         <Image Stretch="Uniform" VerticalAlignment="Top" Margin="182,55,184,0" Name="tocImage" 
                Source="/CDArcha_klient;component/Images/ok-empty.png" MouseLeftButtonDown="OnImage_Clicked" Cursor="Hand" />
-        <Label Content="Obálka" HorizontalAlignment="Left" Margin="53,15,0,0" FontFamily="Arial" Foreground="#5e5e5e" FontSize="20"
+        <Label Content="Médium" HorizontalAlignment="Left" Margin="53,15,0,0" FontFamily="Arial" Foreground="#5e5e5e" FontSize="20"
                VerticalAlignment="Top" />
-        <Label Content="Obsah" Margin="0,15,214,0" VerticalAlignment="Top" FontFamily="Arial" Foreground="#5e5e5e" FontSize="20"
+        <Label Content="Booklet" Margin="0,15,214,0" VerticalAlignment="Top" FontFamily="Arial" Foreground="#5e5e5e" FontSize="20"
                HorizontalAlignment="Right" />
-        <Image Cursor="Hand" Margin="337,55,29,0" Name="authorImage" Source="/CDArcha_klient;component/Images/ok-empty.png" Stretch="Uniform" VerticalAlignment="Top" MouseLeftButtonDown="OnImage_Clicked" />
-        <Label Content="Autor" FontFamily="Arial" FontSize="20" Foreground="#5e5e5e" HorizontalAlignment="Right" Margin="0,15,64,0" VerticalAlignment="Top" />
+        <Image Cursor="Hand" Margin="337,55,29,0" Name="authorImage" Source="/CDArcha_klient;component/Images/ok-empty.png" Stretch="Uniform" VerticalAlignment="Top" MouseLeftButtonDown="OnImage_Clicked" Visibility="Hidden" />
+        <Label Content="Autor" FontFamily="Arial" FontSize="20" Foreground="#5e5e5e" HorizontalAlignment="Right" Margin="0,15,64,0" VerticalAlignment="Top" Visibility="Hidden" />
         <Label Content="Načíst z PDF" Cursor="Hand" FontFamily="Arial" Foreground="#FF5E5E5E" Margin="28,224,338,0" Name="coverPdf" ToolTip="Načíst obrázky z PDF souboru" MouseLeftButtonDown="OnPdf_Clicked" HorizontalContentAlignment="Center" FontSize="16" Height="25" />
         <Label Content="Načíst z PDF" Cursor="Hand" FontFamily="Arial" Foreground="#FF5E5E5E" Margin="182,223,184,0" Name="tocPdf" ToolTip="Načíst obrázky z PDF souboru" MouseLeftButtonDown="OnPdf_Clicked" HorizontalContentAlignment="Center" FontSize="16" Height="25" />
     </Grid>

@@ -1015,24 +1015,36 @@ namespace CDArcha_klient
         }
         /// <summary>Version of application</summary>
         internal static Version Version { get { return Assembly.GetEntryAssembly().GetName().Version; } }
-        
+
+        public const string ip = "http://192.168.1.11:1337";
+        //public const string ip = "https://cdarcha.mzk.cz";
+
         /// <summary>URL of folder containing update-info.xml file</summary>
-        internal const string UpdateServer = "http://195.113.155.152/cdarcha_klient";
+        internal const string UpdateServer = ip + "/cdarcha_klient";
 
         /// <summary>URL of import function on obalkyknih</summary>
-        internal const string ImportLink = "http://195.113.155.152/api/import";
+        internal const string ImportLink = ip + "/api/import";
 
         // <summary>URL to file upload</summary>
-        internal const string UploadLink = "http://195.113.155.152/file/upload";
+        internal const string UploadLink = ip + "/file/upload";
+
+        // <summary>URL to file upload cover-toc</summary>
+        internal const string UploadCoverLink = ip + "/file/coverupload";
 
         // <summary>URL to get checksum and status</summary>
-        internal const string ChecksumLink = "http://195.113.155.152/api/gethash";
+        internal const string ChecksumLink = ip + "/api/gethash";
 
         // <summary>URL to get media by quick media ID</summary>
-        internal const string GetMediaLink = "http://195.113.155.152/api/getmedia";
+        internal const string GetMediaLink = ip + "/api/getmedia";
+
+        // <summary>URL to get media by quick media ID</summary>
+        internal const string GetAllMediaListLink = ip + "/api/getallmedialist";
+
+        // <summary>URL to </summary>
+        internal const string CloseArchiveLink = ip + "/api/closearchive/?id=";
 
         // <summary>URL to view media library</summary>
-        internal const string ViewLink = "https://195.113.155.152/view";
+        internal const string ViewLink = ip + "/cdarcha";
 
         /// <summary>Returns path to temporary folder, where are stored images opened in external editor and downloaded updates</summary>
         internal static string TemporaryFolder { get { return System.IO.Path.GetTempPath() + "Archivacni-klient\\"; } }

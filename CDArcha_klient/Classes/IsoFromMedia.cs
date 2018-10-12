@@ -31,9 +31,9 @@ namespace CDArcha_klient.Classes
 
         #region Constants
         /// <summary>
-        /// 256kB block size
+        /// 4MB block size
         /// </summary>
-        const int BUFFER = 0x40000;
+        const int BUFFER = 0x400000;
 
         /// <summary>
         /// 4 GB maximum size per file on FAT32 file system
@@ -108,12 +108,12 @@ namespace CDArcha_klient.Classes
                 //Read buffer blocks from source and write them to the ISO file
                 do
                 {
-                    if (bgCreator.CancellationPending)
+                    /*if (bgCreator.CancellationPending)
                     {
                         e.Cancel = true;
                         Stop();
                         break;
-                    }
+                    }*/
 
                     streamReader.Read(buffer, 0, BUFFER);
                     streamWriter.Write(buffer, 0, BUFFER);

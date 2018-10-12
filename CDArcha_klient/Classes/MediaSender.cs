@@ -1,10 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Diagnostics;
 using System.ComponentModel;
 
@@ -16,7 +12,7 @@ namespace CDArcha_klient.Classes
         /// <summary>
         /// BackgroundWorker for sending the ISO file
         /// </summary>
-        BackgroundWorker bgSender;
+        BackgroundWorker bgSender = new BackgroundWorker();
 
         /// <summary>
         /// Upload params to send to server
@@ -30,9 +26,9 @@ namespace CDArcha_klient.Classes
 
         #region Constants
         /// <summary>
-        /// 256kB block size
+        /// 4MB block size
         /// </summary>
-        const int BUFFER = 0x40000;
+        const int BUFFER = 0x400000;
 
         /// <summary>
         /// 4 GB maximum size per file on FAT32 file system
@@ -76,7 +72,6 @@ namespace CDArcha_klient.Classes
         /// </summary>
         public MediaSender()
         {
-            bgSender = new BackgroundWorker();
             bgSender.WorkerSupportsCancellation = true;
             bgSender.DoWork += new DoWorkEventHandler(bgSender_DoWork);
             bgSender.RunWorkerCompleted += new RunWorkerCompletedEventHandler(bgSender_RunWorkerCompleted);
@@ -104,7 +99,7 @@ namespace CDArcha_klient.Classes
                 httpHdr.Add("x-cdarcha-filetype:iso");
                 httpHdr.Add("x-cdarcha-mediareadproblem:" + (this.MediumReadProblem ? "1" : "0"));
                 httpHdr.Add("x-cdarcha-forcedupload:" + (this.ForcedUpload ? "1" : "0"));
-                httpWebRequest.Timeout = 10000;
+                httpWebRequest.Timeout = 9000000;
                 httpWebRequest.Method = "POST";
                 httpWebRequest.SendChunked = true;
                 httpWebRequest.AllowWriteStreamBuffering = false;
@@ -146,6 +141,7 @@ namespace CDArcha_klient.Classes
                     if (OnMessage != null)
                     {
                         st.Close();
+                        httpWebRequest.Abort();
                         EventSenderArgs eArgs = new EventSenderArgs("Error while creating the image: " + ex.Message);
                         OnMessage(eArgs);
                     }
@@ -155,6 +151,7 @@ namespace CDArcha_klient.Classes
                     if (OnFinish != null)
                     {
                         st.Close();
+                        httpWebRequest.Abort();
                         EventSenderArgs eArgs = new EventSenderArgs(stopWatch.Elapsed);
                         OnFinish(eArgs);
                     }
@@ -213,7 +210,7 @@ namespace CDArcha_klient.Classes
 
             if (OnMessage != null)
             {
-                EventSenderArgs e = new EventSenderArgs(@"Creation of the images was canceled");
+                EventSenderArgs e = new EventSenderArgs(@"Sending was canceled");
                 OnMessage(e);
             }
         }
@@ -223,11 +220,10 @@ namespace CDArcha_klient.Classes
         /// </summary>
         private void CloseAll()
         {
-            if (bgSender != null)
+            /*if (bgSender != null)
             {
-                bgSender.CancelAsync();
                 bgSender.Dispose();
-            }
+            }*/
         }
 
         /// <summary>
