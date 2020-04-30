@@ -1,20 +1,21 @@
-Je desktopová aplikace pro účely archivace datových médií CD, DVD, USB disků a disket v prostředí knihoven.
+CDArcha-client je desktopová aplikace pro účely archivace datových médií CD, DVD, USB disků a pružných médií v prostředí paměťových institucí.
 
-Instalátor uživatelské verze (pro uživatele bez admin práv na instalovaný PC):
+## Instalátor uživatelské verze:
 
 https://cdarcha.mzk.cz/cdarcha_klient/CDArcha_klient_setupNoAdmin.exe
 
 
-Instalátor administrátorské verze (pro uživatele s admin právy na instalovaný PC):
+## Instalátor administrátorské verze
+(pro uživatele s admin právy na instalovaný PC):
 
 https://cdarcha.mzk.cz/cdarcha_klient/CDArcha_klient_setup.exe
 
 
-Tuto desktopovou aplikaci je možné provozovat:
-* '''V režimu online''' - kdy archivováná média jsou zasíláná na serverovou část CDarcha server.
-* '''V režimu offline''' - kdy archivováná média jsou ukládáná ve formě ISO souborů lokálně na PC.
+## Aplikaci je možné provozovat:
+* V režimu online - kdy archivováná média jsou zasíláná na serverovou část CDarcha server.
+* V režimu offline - kdy archivováná média jsou ukládáná ve formě ISO souborů lokálně na PC.
 
-Je možná archivace medií:
+## Je možná archivace medií:
 * Optických datových médií CD/DVD - archivační klient vytvoří obraz (jeden .iso soubor) celého média se zachovaním originálního systému souborů (i kombinací ISO 9660 + Joliet + UDF).
 * Pružných médií a USB disků - archivační klient vytvoří jede .iso soubor, který bude obsahovat soubory originálního média. Nevytváří se obraz. Pokud je archivován např. 8GB flash disk a obsahuje 10MB dat, bude výsledný .iso soubor velikosti 10MB.
 
