@@ -1,9 +1,12 @@
 Je desktopová aplikace pro účely archivace datových médií CD, DVD, USB disků a disket v prostředí knihoven.
 
-'''Instalátor uživatelské verze''' (pro uživatele bez admin práv na instalovaný PC):
+Instalátor uživatelské verze (pro uživatele bez admin práv na instalovaný PC):
+
 https://cdarcha.mzk.cz/cdarcha_klient/CDArcha_klient_setupNoAdmin.exe
 
-'''Instalátor administrátorské verze''' (pro uživatele s admin právy na instalovaný PC):
+
+Instalátor administrátorské verze (pro uživatele s admin právy na instalovaný PC):
+
 https://cdarcha.mzk.cz/cdarcha_klient/CDArcha_klient_setup.exe
 
 
