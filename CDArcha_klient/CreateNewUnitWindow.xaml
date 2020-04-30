@@ -23,7 +23,7 @@
                 <ComboBoxItem Content="URN:NBN" />
             </ComboBox>
             <TextBox Height="32" HorizontalAlignment="Left" Margin="116,47,0,0" Name="monographIdentifierTextBox" VerticalAlignment="Top" Width="142"
-                     KeyDown="IdentifierTextBox_KeyDown" Text="2686511883" VerticalContentAlignment="Center" Padding="6,0" TextChanged="monographIdentifierTextBox_TextChanged" />
+                     KeyDown="IdentifierTextBox_KeyDown" VerticalContentAlignment="Center" Padding="6,0" TextChanged="monographIdentifierTextBox_TextChanged" />
             <Button Content="Založit" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0,90,0,0" Style="{StaticResource MyButton}"
                     Name="monographNewUnitButton" Width="80" Height="25" Click="NewUnitButton_Click" Foreground="#CECECE" BorderBrush="#656565"
                                 BorderThickness="1" Cursor="Hand" ToolTip="Založit novou jednotku">

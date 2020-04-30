@@ -10,7 +10,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CDArcha_klient</RootNamespace>
     <AssemblyName>CDArcha_klient</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -108,6 +108,9 @@
     <Compile Include="AboutWindow.xaml.cs">
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Classes\IsoEvents.cs" />
+    <Compile Include="Classes\IsoFromDrive.cs" />
+    <Compile Include="Classes\IsoFromDriveInterface.cs" />
     <Compile Include="Classes\JsonApiAllMedia.cs" />
     <Compile Include="Classes\MediaSender.cs" />
     <Compile Include="Classes\IsoFromMedia.cs" />
@@ -286,6 +289,14 @@
     <ProjectReference Include="..\CroppingAdorner\CroppingAdorner\CroppingAdorner.csproj">
       <Project>{65B2E45C-A9DB-4ED6-B019-EEA698F1974C}</Project>
       <Name>CroppingAdorner</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DiscUtils\Library\DiscUtils.Iso9660\DiscUtils.Iso9660.csproj">
+      <Project>{45e92e4c-1991-43ca-b725-0a0038763c3a}</Project>
+      <Name>DiscUtils.Iso9660</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DiscUtils\Library\DiscUtils.Streams\DiscUtils.Streams.csproj">
+      <Project>{9538b06b-19e7-453e-b314-d4cfd50261e8}</Project>
+      <Name>DiscUtils.Streams</Name>
     </ProjectReference>
     <ProjectReference Include="..\SobekCM_Marc_Library\SobekCM_Marc_Library\SobekCM_Marc_Library.csproj">
       <Project>{E92393B7-C13C-407B-B24F-A6CED0C2F2EA}</Project>

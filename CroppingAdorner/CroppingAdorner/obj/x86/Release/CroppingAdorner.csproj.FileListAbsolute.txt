@@ -29,3 +29,15 @@ C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CroppingA
 C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\x86\Release\CroppingAdorner.csproj.GenerateResource.Cache
 C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\x86\Release\CroppingAdorner.csproj.CoreCompileInputs.cache
 C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\x86\Release\CroppingAdorner.dll
+C:\Users\PC\source\repos\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\bin\x86\Release\CroppingAdorner.dll
+C:\Users\PC\source\repos\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\x86\Release\CroppingAdorner.csprojAssemblyReference.cache
+C:\Users\PC\source\repos\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\x86\Release\DAP.Adorners.Properties.Resources.resources
+C:\Users\PC\source\repos\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\x86\Release\CroppingAdorner.csproj.GenerateResource.cache
+C:\Users\PC\source\repos\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\x86\Release\CroppingAdorner.csproj.CoreCompileInputs.cache
+C:\Users\PC\source\repos\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\x86\Release\CroppingAdorner.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CroppingAdorner\CroppingAdorner\bin\x86\Release\CroppingAdorner.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CroppingAdorner\CroppingAdorner\obj\x86\Release\CroppingAdorner.csprojAssemblyReference.cache
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CroppingAdorner\CroppingAdorner\obj\x86\Release\DAP.Adorners.Properties.Resources.resources
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CroppingAdorner\CroppingAdorner\obj\x86\Release\CroppingAdorner.csproj.GenerateResource.cache
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CroppingAdorner\CroppingAdorner\obj\x86\Release\CroppingAdorner.csproj.CoreCompileInputs.cache
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CroppingAdorner\CroppingAdorner\obj\x86\Release\CroppingAdorner.dll

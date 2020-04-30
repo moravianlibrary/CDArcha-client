@@ -85,8 +85,10 @@ namespace CDArcha_klient
     public class GetmediaJsonObject
     {
         public string dtUpdate { get; set; }
-        public string title { get; set; }        public string authors { get; set; }
-        public string year { get; set; }        public string size { get; set; }
+        public string title { get; set; }
+        public string authors { get; set; }
+        public string year { get; set; }
+        public string size { get; set; }
         public string mediaReadProblem { get; set; }
     }
     #endregion

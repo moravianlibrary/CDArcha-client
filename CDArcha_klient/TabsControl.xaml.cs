@@ -22,7 +22,6 @@ using System.Diagnostics;
 using System.Xml.Linq;
 using System.Reflection;
 using System.Collections.Specialized;
-using System.Security.Cryptography;
 using WIA;
 using DAP.Adorners;
 using CDArcha_klient.Classes;
@@ -1812,6 +1811,18 @@ namespace CDArcha_klient
                 IPHostEntry host;
                 string localIPv4 = "";
                 string localIPv6 = "";
+                string systemManufacturer = "";
+                string systemModel = "";
+                string systemName = "";
+                string systemDNSHostName = "";
+                string systemDomain = "";
+                string systemNumberOfLogicalProcessors = "";
+                string systemUsername = "";
+                string osName = "";
+                string osVersion = "";
+                string osFreePhysicalMemory = "";
+                string osFreeVirtualMemory = "";
+                string driveInfo = "";
                 host = Dns.GetHostEntry(Dns.GetHostName());
                 foreach (IPAddress ip in host.AddressList)
                 {
@@ -1822,6 +1833,50 @@ namespace CDArcha_klient
                     if (ip.AddressFamily == AddressFamily.InterNetworkV6)
                     {
                         localIPv6 = ip.ToString();
+                    }
+                }
+
+                System.Management.SelectQuery query = new System.Management.SelectQuery(@"Select * from Win32_ComputerSystem");
+                using (System.Management.ManagementObjectSearcher searcher = new System.Management.ManagementObjectSearcher(query))
+                {
+                    foreach (System.Management.ManagementObject process in searcher.Get())
+                    {
+                        //print system info
+                        process.Get();
+                        systemManufacturer = process["Manufacturer"].ToString();
+                        systemModel = process["Model"].ToString();
+                        systemName = process["Name"].ToString();
+                        systemDNSHostName = process["DNSHostName"].ToString();
+                        systemDomain = process["Domain"].ToString();
+                        systemNumberOfLogicalProcessors = process["NumberOfLogicalProcessors"].ToString();
+                        systemUsername = process["Username"].ToString();
+                    }
+                }
+
+                query = new System.Management.SelectQuery(@"Select * from Win32_OperatingSystem");
+                using (System.Management.ManagementObjectSearcher searcher = new System.Management.ManagementObjectSearcher(query))
+                {
+                    foreach (System.Management.ManagementObject process in searcher.Get())
+                    {
+                        //print system info
+                        process.Get();
+                        osFreePhysicalMemory = process["FreePhysicalMemory"].ToString();
+                        osFreeVirtualMemory = process["FreeVirtualMemory"].ToString();
+                        osName = process["Name"].ToString();
+                        osVersion = process["Version"].ToString();
+                    }
+                }
+
+                System.IO.DriveInfo[] drives = System.IO.DriveInfo.GetDrives();
+                foreach (System.IO.DriveInfo drive in drives)
+                {
+                    if (drive.DriveType == System.IO.DriveType.CDRom || drive.DriveType == System.IO.DriveType.Removable)
+                    {
+                        String dn = drive.Name;
+                        dn = dn.Remove(dn.Length - 1);
+                        ManagementObject disk = new ManagementObject("Win32_LogicalDisk.DeviceID=\"" + dn + "\"");
+                        disk.Get();
+                        driveInfo += disk["Name"].ToString() + " " + disk["DriveType"].ToString() + (disk["VolumeName"] != null ? ", VolumeName:" + disk["VolumeName"].ToString() + ", Size:" + disk["Size"].ToString() : "empty") + " ; ";
                     }
                 }
 
@@ -1868,7 +1923,19 @@ namespace CDArcha_klient
                                     new XElement(mix + "name", "CDArcha_klient"),
                                     new XElement(mix + "version", Assembly.GetEntryAssembly().GetName().Version),
                                     new XElement(mix + "local-IPv4-address", localIPv4),
-                                    new XElement(mix + "local-IPv6-address", localIPv6)
+                                    new XElement(mix + "local-IPv6-address", localIPv6),
+                                    new XElement(mix + "system-manufacturer", systemManufacturer),
+                                    new XElement(mix + "system-model", systemModel),
+                                    new XElement(mix + "system-name", systemName),
+                                    new XElement(mix + "system-dns-hostname", systemDNSHostName),
+                                    new XElement(mix + "system-domain", systemDomain),
+                                    new XElement(mix + "system-number-of-logical-processors", systemNumberOfLogicalProcessors),
+                                    new XElement(mix + "system-username", systemUsername),
+                                    new XElement(mix + "os-name", osName),
+                                    new XElement(mix + "os-version", osVersion),
+                                    new XElement(mix + "os-free-physical-memory", osFreePhysicalMemory),
+                                    new XElement(mix + "os-free-virtual-memory", osFreeVirtualMemory),
+                                    new XElement(mix + "drive-info", driveInfo)
                                 )
                             )
                         )
@@ -2162,7 +2229,7 @@ namespace CDArcha_klient
                 HttpStatusCode wRespStatusCode = ((HttpWebResponse)ex.Response).StatusCode;
                 if (wRespStatusCode == System.Net.HttpStatusCode.Forbidden)
                 {
-                    MessageBoxDialogWindow.Show("Odesílání dat", "API odmítá spojení. Pravděpodobně se nezhoduje verze aplikace s verzí API.",
+                    MessageBoxDialogWindow.Show("Odesílání dat", "API odmítá spojení. Pravděpodobně se neshoduje verze aplikace s verzí API.",
                     "OK", MessageBoxDialogWindow.Icons.Error);
                 }
                 else if (wRespStatusCode == System.Net.HttpStatusCode.Unauthorized)
@@ -2499,7 +2566,7 @@ namespace CDArcha_klient
                 }
 
                 // META PARAMETER
-                string metaDataString = boundaryStringLine
+                string metaDataString = "\r\n" + boundaryStringLine
                     + String.Format(
                     "Content-Disposition: form-data; name=\"{0}\"; "
                     + "filename=\"{1}\"\r\nContent-Type: {2}\r\n\r\n",
@@ -2689,21 +2756,48 @@ namespace CDArcha_klient
                         logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Vytváření ISO na lokálny PC.\r");
                     }));
 
-                    //Create ISO
-                    IsoFromMedia iso = new IsoFromMedia();
-                    iso.OnFinish += new IsoEventHandler(iso_OnFinish);
-                    iso.OnMessage += new IsoEventHandler(iso_OnMessage);
-                    iso.OnProgress += new IsoEventHandler(iso_OnProgress);
+                    // decide if to copy CD/DVD media, or removable drive
+                    DriveInfo driveInfo = new DriveInfo(System.IO.Path.GetPathRoot(selectedDriveName));
 
-                    IsoState status = iso.CreateIsoFromMedia(@selectedDriveName, @Settings.tmpPathToIso);
-                    if (status != IsoState.Running)
+                    if (driveInfo.DriveType == System.IO.DriveType.Removable)
                     {
-                        iso.Stop();
-                        MessageBoxDialogWindow.Show("Oznam", "Vytváření ISO selhalo.", "OK", MessageBoxDialogWindow.Icons.Error);
-                        Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                        //Create USB/floppy ISO
+
+                        IsoFromDrive iso = new IsoFromDrive();
+                        iso.OnFinish += new IsoEventHandler(iso_OnFinish);
+                        iso.OnMessage += new IsoEventHandler(iso_OnMessage);
+                        iso.OnProgress += new IsoEventHandler(iso_OnProgress);
+
+                        IsoFromDriveState status = iso.CreateIsoFromDrive(@selectedDriveName, @Settings.tmpPathToIso);
+                        if (status != IsoFromDriveState.Running)
                         {
-                            logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Vytváření ISO selhalo.\r");
-                        }));
+                            iso.Stop();
+                            MessageBoxDialogWindow.Show("Oznam", "Vytváření ISO selhalo.", "OK", MessageBoxDialogWindow.Icons.Error);
+                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                            {
+                                logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Vytváření ISO selhalo.\r");
+                            }));
+                        }
+                    }
+                    else
+                    {
+                        //Create CD/DVD ISO
+
+                        IsoFromMedia iso = new IsoFromMedia();
+                        iso.OnFinish += new IsoEventHandler(iso_OnFinish);
+                        iso.OnMessage += new IsoEventHandler(iso_OnMessage);
+                        iso.OnProgress += new IsoEventHandler(iso_OnProgress);
+
+                        IsoState status = iso.CreateIsoFromMedia(@selectedDriveName, @Settings.tmpPathToIso);
+                        if (status != IsoState.Running)
+                        {
+                            iso.Stop();
+                            MessageBoxDialogWindow.Show("Oznam", "Vytváření ISO selhalo.", "OK", MessageBoxDialogWindow.Icons.Error);
+                            Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                            {
+                                logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Vytváření ISO selhalo.\r");
+                            }));
+                        }
                     }
                 }
             }
@@ -5318,6 +5412,20 @@ namespace CDArcha_klient
                     return;
                 }
 
+                string[] filePaths = Directory.GetFiles(System.IO.Path.GetPathRoot(driveName), "*.cda", SearchOption.TopDirectoryOnly);
+                foreach (string name in filePaths)
+                {
+                    MessageBox.Show("Aplikace nepodporuje archivaci Audio CD");
+                    return;
+                }
+
+                filePaths = Directory.GetDirectories(System.IO.Path.GetPathRoot(driveName), "*VIDEO_TS", SearchOption.TopDirectoryOnly);
+                foreach (string name in filePaths)
+                {
+                    MessageBox.Show("Aplikace nepodporuje archivaci Video DVD");
+                    return;
+                }
+
                 foreach (ManagementObject queryObj in searcher.Get())
                 {
                     //Double size = Convert.ToDouble(queryObj["Size"]);
@@ -5398,7 +5506,7 @@ namespace CDArcha_klient
             {
                 bool dontShowAgain;
                 var result = MessageBoxDialogWindow.Show("Opakování přenosu",
-                    "Toto médium je již v pořádku archivováno. Opakovat přenos?", out dontShowAgain, null,
+                    "Toto médium je už archivováno. Opakovat přenos?", out dontShowAgain, null,
                     "Ano", "Ne", false, MessageBoxDialogWindow.Icons.Error);
                 if (result != false)
                 {
@@ -5410,6 +5518,10 @@ namespace CDArcha_klient
             {
                 start = true;
             }
+
+            // delete working ISO if exists
+            if (File.Exists(Settings.tmpPathToIso))
+                File.Delete(Settings.tmpPathToIso);
 
             if (start)
             {
@@ -5424,6 +5536,17 @@ namespace CDArcha_klient
 
         private void iso_OnFinish(EventIsoArgs e)
         {
+            if (!File.Exists(Settings.tmpPathToIso))
+            {
+                Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+                {
+                    this.stepIcon1.Visibility = Visibility.Hidden;
+                    this.stepIcon2.Visibility = Visibility.Hidden;
+                }));
+                MessageBox.Show("Chyba: Archiv se nepovedlo vytvořit !");
+                return;
+            }
+
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
                 this.stepIcon2.Source = getIconSource("CDArcha_klient;component/Images/ok-icon-done.png");

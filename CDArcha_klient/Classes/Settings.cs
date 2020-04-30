@@ -1002,7 +1002,20 @@ namespace CDArcha_klient
         {
             get
             {
-                return Registry.CurrentUser.CreateSubKey(@"Software\Archivacni-klient");
+                RegistryKey regkey = null;
+                bool is64bit = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"));
+                if (is64bit)
+                {
+                    using (var hkcu = RegistryKey.OpenBaseKey(RegistryHive.CurrentUser, RegistryView.Registry64))
+                    {
+                        regkey = hkcu.CreateSubKey(@"Software\Archivacni-klient");
+                    }
+                }
+                else
+                {
+                    regkey = Registry.CurrentUser.CreateSubKey(@"Software\Archivacni-klient");
+                }
+                return regkey;
             }
         }
 
@@ -1010,14 +1023,27 @@ namespace CDArcha_klient
         {
             get
             {
-                return Registry.LocalMachine.OpenSubKey(@"Software\Archivacni-klient");
+                RegistryKey regkey = null;
+                bool is64bit = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("PROCESSOR_ARCHITEW6432"));
+                if (is64bit)
+                {
+                    using (var hklm = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64))
+                    {
+                        regkey = hklm.OpenSubKey(@"Software\Archivacni-klient");
+                    }
+                }
+                else
+                {
+                    regkey = Registry.LocalMachine.OpenSubKey(@"Software\Archivacni-klient");
+                }
+                return regkey;
             }
         }
         /// <summary>Version of application</summary>
         internal static Version Version { get { return Assembly.GetEntryAssembly().GetName().Version; } }
 
-        public const string ip = "http://192.168.1.11:1337";
-        //public const string ip = "https://cdarcha.mzk.cz";
+        //public const string ip = "http://192.168.56.1:1337";
+        public const string ip = "https://cdarcha.mzk.cz";
 
         /// <summary>URL of folder containing update-info.xml file</summary>
         internal const string UpdateServer = ip + "/cdarcha_klient";

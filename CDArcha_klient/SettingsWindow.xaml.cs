@@ -298,7 +298,7 @@ namespace CDArcha_klient
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             DialogResult result = fbd.ShowDialog();
             string folderName = fbd.SelectedPath;
-            if (!String.IsNullOrEmpty(folderName)) scanOutputDir.Text = folderName;
+            if (!String.IsNullOrEmpty(folderName)) tmpDir.Text = folderName;
         }
 
     }

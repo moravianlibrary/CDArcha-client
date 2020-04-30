@@ -195,7 +195,7 @@
                                    MouseLeftButtonDown="PartImageWarning_Click" />
                             <Button x:Name="downloadMetadataButton" HorizontalAlignment="Right" Margin="0,6,33,0" Foreground="#b4b4b4" Height="30"
                                     BorderBrush="#353535" Cursor="Hand" VerticalAlignment="Top" Width="30" Click="DownloadMetadataButton_Click"
-                                    BorderThickness="1" ToolTip="Znovu stáhnout informace z katalogu a z Obálek Knih" 
+                                    BorderThickness="1" ToolTip="Opakovaně stáhnout informace z katalogu a z Obálek Knih" 
                                     Style="{StaticResource MyButtonNoPadding}">
                                 <Button.Background>
                                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
@@ -207,7 +207,7 @@
                                 <Image Height="25" Width="25" HorizontalAlignment="Center" VerticalAlignment="Center"
                                        Stretch="Uniform" Source="/CDArcha_klient;component/Images/refresh-icon.png" />
                             </Button>
-                            <Button x:Name="addUnionButton" Content="Připojit souborný záznam" Click="addUnionButton_Click" Height="30" HorizontalAlignment="Center" Margin="16,164,34,0" Foreground="#b4b4b4" BorderBrush="#353535" Cursor="Hand" VerticalAlignment="Top" Width="180" BorderThickness="1" Style="{StaticResource MyButtonNoPadding}" ToolTip="Vyhledat souborný záznam v katalogu Souborném katalogu">
+                            <Button x:Name="addUnionButton" Content="Připojit souborný záznam" Click="addUnionButton_Click" Height="30" HorizontalAlignment="Center" Margin="16,164,34,0" Foreground="#b4b4b4" BorderBrush="#353535" Cursor="Hand" VerticalAlignment="Top" Width="180" BorderThickness="1" Style="{StaticResource MyButtonNoPadding}" ToolTip="Vyhledat souborný záznam v katalogu Souborném katalogu" Visibility="Hidden">
                                 <Button.Background>
                                     <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
                                         <GradientStop Color="#FF9B4848" Offset="0.0" />

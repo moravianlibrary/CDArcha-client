@@ -591,7 +591,7 @@ namespace CDArcha_klient
             if (e.Error != null)
             {
                 MessageBoxDialogWindow.Show("Chyba při stahování aktualizace",
-                    "Počas stahování aktualizace došlo k chybě. Zkuste spustit stahování znovu.",
+                    "Počas stahování aktualizace došlo k chybě. Zkuste spustit stahování opakovaně.",
                     "OK", MessageBoxDialogWindow.Icons.Error);
                 this.updateDownloadTextBox.Visibility = Visibility.Collapsed;
                 this.updateDownloadProgressBar.Visibility = Visibility.Collapsed;
@@ -620,7 +620,7 @@ namespace CDArcha_klient
                     {
                         File.Delete(this.updateChecker.FilePath);
                         MessageBoxDialogWindow.Show("Aktualizace poškozena",
-                            "Kontrolní součet stažené aktualizace se nezhoduje, soubor byl zmazán, stáhněte aktualizaci znovu.",
+                            "Kontrolní součet stažené aktualizace se neshoduje, soubor byl smazán, stáhněte aktualizaci opakovaně.",
                             "OK", MessageBoxDialogWindow.Icons.Error);
                         this.updateDownloadProgressBar.Value = 0;
                         this.updateDownloadProgressBar.Visibility = Visibility.Collapsed;
@@ -631,7 +631,7 @@ namespace CDArcha_klient
                 catch (Exception)
                 {
                     MessageBoxDialogWindow.Show("Chyba kontroly aktualizace",
-                        "Při kontrole integrity aktualizace došlo k chybě, stáhněte aktualizaci znovu.",
+                        "Při kontrole integrity aktualizace došlo k chybě, stáhněte aktualizaci opakovaně.",
                         "OK", MessageBoxDialogWindow.Icons.Error);
                     this.updateDownloadProgressBar.Value = 0;
                     this.updateDownloadProgressBar.Visibility = Visibility.Collapsed;

@@ -152,6 +152,7 @@ namespace CDArcha_klient.Classes
                     {
                         st.Close();
                         httpWebRequest.Abort();
+                        //WebResponse response = httpWebRequest.GetResponse();
                         EventSenderArgs eArgs = new EventSenderArgs(stopWatch.Elapsed);
                         OnFinish(eArgs);
                     }
