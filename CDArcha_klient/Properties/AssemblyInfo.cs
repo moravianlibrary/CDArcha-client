@@ -8,11 +8,11 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("CDArcha klient")]
-[assembly: AssemblyDescription("Archivační klient pro archivaci optických médií")]
+[assembly: AssemblyDescription("Archivační klient pro archivaci optických, pružných a USB médií")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Moravská Zemská Knihovna")]
 [assembly: AssemblyProduct("CDArcha klient")]
-[assembly: AssemblyCopyright("MZK 2017")]
+[assembly: AssemblyCopyright("MZK 2020")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -51,4 +51,4 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("0.1.*")]
+[assembly: AssemblyVersion("1.1.*")]
