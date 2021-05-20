@@ -101,7 +101,9 @@ namespace CDArcha_klient.Classes
             try
             {
                 streamReader = new FileStream(Handle, FileAccess.Read, BUFFER);
-                streamWriter = new FileStream(PathToIso, FileMode.Create, FileAccess.Write, FileShare.Read, BUFFER);
+                streamWriter = createFileStream(PathToIso, BUFFER);
+                PathToIso = streamWriter.Name;
+                //streamWriter = new FileStream(PathToIso, FileMode.Create, FileAccess.Write, FileShare.Read, BUFFER);
 
                 byte[] buffer = new byte[BUFFER];
 
@@ -145,6 +147,42 @@ namespace CDArcha_klient.Classes
                     EventIsoArgs eArgs = new EventIsoArgs(stopWatch.Elapsed);
                     OnFinish(eArgs);
                 }
+            }
+        }
+
+        private FileStream createFileStream(string fileName, int BUFFER)
+        {
+            try
+            {
+                return new FileStream(fileName, FileMode.Create, FileAccess.Write, FileShare.Read, BUFFER);
+            }
+            catch (Exception)
+            {
+                string newFileName;
+                string tmpFileName = Path.GetFileName(fileName);
+                string tmpPathName = Path.GetDirectoryName(fileName);
+                int pos1 = tmpFileName.IndexOf("-");
+                int pos2 = tmpFileName.IndexOf(".");
+
+                if (pos1 == -1)
+                {
+                    // zalozit prvni rezervni working file
+                    newFileName = tmpPathName + "\\working-1.iso";
+                }
+                else
+                {
+                    // rezervni working file uz existuje, inkrementovat
+                    string strPostfix = tmpFileName.Substring(pos1 + 1, pos2 - pos1 - 1);
+                    int intPostfix = Int16.Parse(strPostfix);
+                    if (intPostfix > 100)
+                    {
+                        // pojistka poctu iteraci
+                        return null;
+                    }
+                    newFileName = tmpPathName + "\\working-" + (intPostfix + 1) + ".iso";
+                }
+                Settings.tmpPathToIso = newFileName;
+                return createFileStream(newFileName, BUFFER);
             }
         }
 

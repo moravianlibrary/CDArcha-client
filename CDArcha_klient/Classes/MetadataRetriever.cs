@@ -22,8 +22,6 @@ namespace CDArcha_klient.Classes
     /// <summary> Class used for retrieval of metadata </summary>
     public static class MetadataRetriever
     {
-        const string CRYPTO_KEY = "0kcz,ApIv.3*";
-
         /// <summary>
         /// Retrieves Metadata for record specified by given identifier and saves important messages to list of warnings
         /// </summary>
@@ -308,7 +306,7 @@ namespace CDArcha_klient.Classes
                 IEnumerable<MARC_Record> recordsFromZ3950 = MARC_Record_Z3950_Retriever.Get_Record(
                     identifierFieldNumber, '"'+value+'"', endpoint, out errorMessage, z39Encoding);
 
-                MARCXML_Writer marcXmlWriter = new MARCXML_Writer(System.IO.Path.Combine(Settings.TmpDir, "marcxml.xml"));
+                MARCXML_Writer marcXmlWriter = new MARCXML_Writer(System.IO.Path.Combine(Settings.TemporaryFolder, "marcxml.xml"));
 
                 if (recordsFromZ3950 != null)
                 {
@@ -335,9 +333,9 @@ namespace CDArcha_klient.Classes
                     marcXmlWriter.Close();
                 }
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Z39Exception("Nastala neočekávaná chyba během Z39.50 dotazu.");
+                throw new Z39Exception("Nastala chyba během stahování MARC záznamu pomocí Z39.50, nebo zápisu výsledného MARC záznamu na disk. Detailnější popis problému: " + e.Message);
             }
 
             // Display any error message encountered
@@ -376,123 +374,118 @@ namespace CDArcha_klient.Classes
 
                 XslCompiledTransform myXslTrans = new XslCompiledTransform();
                 myXslTrans.Load(System.IO.Path.Combine(templateDir, "MARC21slim2MODS.xsl"));
-                XmlTextWriter myWriter = new XmlTextWriter(System.IO.Path.Combine(Settings.TmpDir, "mods.xml"), null);
-                myXslTrans.Transform(System.IO.Path.Combine(Settings.TmpDir, "marcxml.xml"), null, myWriter);
+                XmlTextWriter myWriter = new XmlTextWriter(System.IO.Path.Combine(Settings.TemporaryFolder, "mods.xml"), null);
+                myXslTrans.Transform(System.IO.Path.Combine(Settings.TemporaryFolder, "marcxml.xml"), null, myWriter);
                 myWriter.Close();
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                throw new Z39Exception("Nastala chyba během transformace MARCXML na MODS.");
+                //throw new Z39Exception("Nastala chyba během transformace MARCXML na MODS. " + e.ToString());
+                MessageBoxDialogWindow.Show("Chyba", "Nastala chyba během transformace MARCXML na MODS. " + e.ToString(), "OK", MessageBoxDialogWindow.Icons.Error);
             }
-        }
+}
 
-        // Build identifiers list (ISBNs + 902a yearbooks)
-        private static List<MetadataIdentifier> getIdentifiersList(Metadata metadata)
+// Build identifiers list (ISBNs + 902a yearbooks)
+private static List<MetadataIdentifier> getIdentifiersList(Metadata metadata)
+{
+List<MetadataIdentifier> Identifiers = new List<MetadataIdentifier>();
+
+// No identifier (default value if union record not found)
+MetadataIdentifier nullIdentifier = new MetadataIdentifier();
+nullIdentifier.IdentifierType = IdentifierType.ISBN;
+nullIdentifier.IdentifierCode = null;
+nullIdentifier.IdentifierDescription = "nebylo nalezeno ISBN souborného záznamu";
+Identifiers.Add(nullIdentifier);
+
+// MARC21 ISBNs
+foreach (var isbn in metadata.VariableFields.Where(vf => Settings.MetadataIsbnField.Item1.ToString("D3").Equals(vf.TagName)))
+{
+MetadataIdentifier identifierToInsert = new MetadataIdentifier();
+List<string> subfDescription = new List<string>();
+foreach (var subf in isbn.Subfields)
+{
+    if (subf.Key == "a") identifierToInsert.IdentifierCode = subf.Value;
+    if (subf.Key == "q") subfDescription.Add(subf.Value);
+}
+identifierToInsert.IdentifierType = IdentifierType.ISBN;
+identifierToInsert.IdentifierDescription = string.Join(" ", subfDescription);
+Identifiers.Add(identifierToInsert);
+}
+
+// ISBNs of yearbooks (902a)
+foreach (var isbn in metadata.VariableFields.Where(vf => Settings.MetadataIsbnYearbookField.Item1.ToString("D3").Equals(vf.TagName)))
+{
+MetadataIdentifier identifierToInsert = new MetadataIdentifier();
+List<string> subfDescription = new List<string>();
+foreach (var subf in isbn.Subfields)
+{
+    if (subf.Key == "a") identifierToInsert.IdentifierCode = subf.Value;
+    if (subf.Key == "q") subfDescription.Add(subf.Value);
+}
+identifierToInsert.IdentifierType = IdentifierType.ISBN;
+identifierToInsert.IdentifierDescription = string.Join(" ", subfDescription);
+Identifiers.Add(identifierToInsert);
+}
+
+return Identifiers;
+}
+
+// Returns collection of fixed fields from Marc21 record
+private static IEnumerable<KeyValuePair<string, string>> MarcGetFixedFields(MARC_Record record)
+{
+List<KeyValuePair<string, string>> fixedFields = new List<KeyValuePair<string, string>>();
+fixedFields.Add(new KeyValuePair<string, string>("LDR", record.Leader));
+
+foreach (int thisTag in record.Fields.Keys)
+{
+List<MARC_Field> matchingFields = record.Fields[thisTag];
+foreach (MARC_Field thisField in matchingFields)
+{
+    if (thisField.Subfield_Count == 0)
+    {
+        if (thisField.Control_Field_Value.Length > 0)
         {
-            List<MetadataIdentifier> Identifiers = new List<MetadataIdentifier>();
+            fixedFields.Add(new KeyValuePair<string, string>(
+                thisField.Tag.ToString().PadLeft(3, '0'),
+                thisField.Control_Field_Value));
 
-            // No identifier (default value if union record not found)
-            MetadataIdentifier nullIdentifier = new MetadataIdentifier();
-            nullIdentifier.IdentifierType = IdentifierType.ISBN;
-            nullIdentifier.IdentifierCode = null;
-            nullIdentifier.IdentifierDescription = "nebylo nalezeno ISBN souborného záznamu";
-            Identifiers.Add(nullIdentifier);
-
-            // MARC21 ISBNs
-            foreach (var isbn in metadata.VariableFields.Where(vf => Settings.MetadataIsbnField.Item1.ToString("D3").Equals(vf.TagName)))
-            {
-                MetadataIdentifier identifierToInsert = new MetadataIdentifier();
-                List<string> subfDescription = new List<string>();
-                foreach (var subf in isbn.Subfields)
-                {
-                    if (subf.Key == "a") identifierToInsert.IdentifierCode = subf.Value;
-                    if (subf.Key == "q") subfDescription.Add(subf.Value);
-                }
-                identifierToInsert.IdentifierType = IdentifierType.ISBN;
-                identifierToInsert.IdentifierDescription = string.Join(" ", subfDescription);
-                Identifiers.Add(identifierToInsert);
-            }
-
-            // ISBNs of yearbooks (902a)
-            foreach (var isbn in metadata.VariableFields.Where(vf => Settings.MetadataIsbnYearbookField.Item1.ToString("D3").Equals(vf.TagName)))
-            {
-                MetadataIdentifier identifierToInsert = new MetadataIdentifier();
-                List<string> subfDescription = new List<string>();
-                foreach (var subf in isbn.Subfields)
-                {
-                    if (subf.Key == "a") identifierToInsert.IdentifierCode = subf.Value;
-                    if (subf.Key == "q") subfDescription.Add(subf.Value);
-                }
-                identifierToInsert.IdentifierType = IdentifierType.ISBN;
-                identifierToInsert.IdentifierDescription = string.Join(" ", subfDescription);
-                Identifiers.Add(identifierToInsert);
-            }
-
-            return Identifiers;
-        }
-
-        // Returns collection of fixed fields from Marc21 record
-        private static IEnumerable<KeyValuePair<string, string>> MarcGetFixedFields(MARC_Record record)
-        {
-            List<KeyValuePair<string, string>> fixedFields = new List<KeyValuePair<string, string>>();
-            fixedFields.Add(new KeyValuePair<string, string>("LDR", record.Leader));
-            
-            foreach (int thisTag in record.Fields.Keys)
-            {
-                List<MARC_Field> matchingFields = record.Fields[thisTag];
-                foreach (MARC_Field thisField in matchingFields)
-                {
-                    if (thisField.Subfield_Count == 0)
-                    {
-                        if (thisField.Control_Field_Value.Length > 0)
-                        {
-                            fixedFields.Add(new KeyValuePair<string, string>(
-                                thisField.Tag.ToString().PadLeft(3, '0'),
-                                thisField.Control_Field_Value));
-                            
-                        }
-                    }
-                }
-            }
-            return fixedFields;
-        }
-
-        // Returns collection of non-fixed (variable) fields from Marc21 record
-        private static IEnumerable<MetadataField> MarcGetVariableFields(MARC_Record record)
-        {
-            List<MetadataField> metadataFieldsList = new List<MetadataField>();
-            
-            // Step through each field in the collection
-            foreach (int thisTag in record.Fields.Keys)
-            {
-                List<MARC_Field> matchingFields = record.Fields[thisTag];
-                foreach (MARC_Field thisField in matchingFields)
-                {
-                    if (thisField.Subfield_Count != 0)
-                    {
-                        MetadataField metadataField = new MetadataField();
-                        metadataField.TagName = thisField.Tag.ToString().PadLeft(3, '0');
-                        metadataField.Indicator1 = thisField.Indicator1.ToString();
-                        metadataField.Indicator2 = thisField.Indicator2.ToString();
-                        List<KeyValuePair<string, string>> subfields = new List<KeyValuePair<string, string>>();
-                        // Build the complete line
-                        foreach (MARC_Subfield thisSubfield in thisField.Subfields)
-                        {
-                            subfields.Add(new KeyValuePair<string, string>
-                                (thisSubfield.Subfield_Code.ToString(), thisSubfield.Data));
-                        }
-                        metadataField.Subfields = subfields;
-                        metadataFieldsList.Add(metadataField);
-                    }
-                }
-            }
-            return metadataFieldsList;
-        }
-
-        // Returns encrypted sigla (encrypted in compliance with NodeJS aes-256-cbc, using CRYPTO_KEY as password)
-        private static string EcryptSigla(string sigla)
-        {
-            return CryptoUtility.Encrypt(sigla, CryptoUtility.HashSHA256(CRYPTO_KEY));
         }
     }
+}
+}
+return fixedFields;
+}
+
+// Returns collection of non-fixed (variable) fields from Marc21 record
+private static IEnumerable<MetadataField> MarcGetVariableFields(MARC_Record record)
+{
+List<MetadataField> metadataFieldsList = new List<MetadataField>();
+
+// Step through each field in the collection
+foreach (int thisTag in record.Fields.Keys)
+{
+List<MARC_Field> matchingFields = record.Fields[thisTag];
+foreach (MARC_Field thisField in matchingFields)
+{
+    if (thisField.Subfield_Count != 0)
+    {
+        MetadataField metadataField = new MetadataField();
+        metadataField.TagName = thisField.Tag.ToString().PadLeft(3, '0');
+        metadataField.Indicator1 = thisField.Indicator1.ToString();
+        metadataField.Indicator2 = thisField.Indicator2.ToString();
+        List<KeyValuePair<string, string>> subfields = new List<KeyValuePair<string, string>>();
+        // Build the complete line
+        foreach (MARC_Subfield thisSubfield in thisField.Subfields)
+        {
+            subfields.Add(new KeyValuePair<string, string>
+                (thisSubfield.Subfield_Code.ToString(), thisSubfield.Data));
+        }
+        metadataField.Subfields = subfields;
+        metadataFieldsList.Add(metadataField);
+    }
+}
+}
+return metadataFieldsList;
+}
+}
 }

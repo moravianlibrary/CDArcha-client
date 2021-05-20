@@ -61,16 +61,16 @@
 
             </Style>
         </TabControl.Resources>
-        <TabItem Header="Metadata" Name="metadataTabItem">
+        <TabItem Header="Metadata" x:Name="metadataTabItem">
             <Grid>
                 <Grid.Background>
                     <ImageBrush Viewport="0,0,218,218" ViewportUnits="Absolute" Stretch="None" TileMode="Tile"
                                     ImageSource="/CDArcha_klient;component/Images/ok-background-center.png"/>
                 </Grid.Background>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" MinWidth="230" Name="metadataCD" />
+                    <ColumnDefinition Width="Auto" x:Name="metadataCD" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="30*" MinWidth="300" />
+                    <ColumnDefinition MinWidth="300" />
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="2" x:Name="image1" Stretch="Fill" VerticalAlignment="Bottom" Width="250" Source="Images/CD-icon.png" Height="250" HorizontalAlignment="Right" Margin="0,0,-40,-60" />
                 <GridSplitter HorizontalAlignment="Center" VerticalAlignment="Stretch" Grid.Column="1"
@@ -84,14 +84,16 @@
                 <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Hidden">
                     <Grid x:Name="recordGrid">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="4*"/>
                             <ColumnDefinition/>
                         </Grid.ColumnDefinitions>
                         <Grid.Background>
                             <ImageBrush Viewport="0,0,204,204" ViewportUnits="Absolute" Stretch="None" TileMode="Tile" 
                                         ImageSource="/CDArcha_klient;component/Images/ok-background-left.png"/>
                         </Grid.Background>
-                        <Grid x:Name="partRecordGrid" Visibility="Visible" Grid.ColumnSpan="2">
+                        <Grid x:Name="partRecordGrid" Width="230">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
                             <Label Content="Informace o části" FontFamily="Arial" Foreground="#858585" HorizontalAlignment="Left"
                                     Margin="13,5,0,0" FontSize="14" FontWeight="Bold" VerticalAlignment="Top" />
                             <Label Content="Název" FontFamily="Arial" Foreground="#858585" HorizontalAlignment="Left"
@@ -217,7 +219,7 @@
                             </Button>
                             <Label Content="Další nepovinné identifikátory" Cursor="Hand" FontFamily="Arial" Foreground="#858585" HorizontalAlignment="Left" Margin="13,356,0,0" x:Name="optionalAtributesLink" VerticalAlignment="Top" Visibility="Hidden" Width="167" MouseUp="optionalAtributesLink_MouseUp" />
                         </Grid>
-                        <Grid x:Name="collectionRecordGrid" Visibility="Collapsed" Grid.ColumnSpan="2">
+                        <Grid x:Name="collectionRecordGrid" Width="230" Grid.Column="1" Visibility="Collapsed">
                             <Label Content="Informace SZ" FontFamily="Arial" Foreground="#858585"
                                    HorizontalAlignment="Left" Margin="13,5,0,0" FontSize="14" FontWeight="Bold"
                                    VerticalAlignment="Top" />
@@ -280,7 +282,7 @@
                                     Width="18" Source="/CDArcha_klient;component/Images/ok-icon-warning.png" HorizontalAlignment="Right" />
                             <Image Margin="0,466,10,0" x:Name="ismnWarning" Stretch="Uniform" VerticalAlignment="Top" Visibility="Hidden"
                                     Width="18" Source="/CDArcha_klient;component/Images/ok-icon-warning.png" HorizontalAlignment="Right" />
-                            <Image Height="85" HorizontalAlignment="Left" Margin="6,206,0,0" x:Name="partnoPartnameWarning" Stretch="Fill" VerticalAlignment="Top" Width="181" Source="/CDArcha_klient;component/Images/arrow_partno_partname.png" />
+                            <Image Height="85" HorizontalAlignment="Left" x:Name="partnoPartnameWarning" Stretch="Fill" VerticalAlignment="Top" Width="181" Source="/CDArcha_klient;component/Images/arrow_partno_partname.png" Margin="16,206,0,0" />
                         </Grid>
                         <Button x:Name="showCompleteMetadataButton" Content="Zobrazit metadatový záznam" IsEnabled="False" Height="30"
                                 HorizontalAlignment="Center" Margin="16,584,34,0" Foreground="#b4b4b4" BorderBrush="#353535" Cursor="Hand"
@@ -299,17 +301,18 @@
                     <StackPanel Margin="15">
                         <Expander x:Name="expanderStep0" Header="Doplňkové informace" Background="#19000000">
                             <Grid x:Name="gridStep0" Height="210">
-                                <Grid Height="185" HorizontalAlignment="Center" x:Name="gridIdentifiers" VerticalAlignment="Center" Width="509.5" UseLayoutRounding="False" Background="#FF790000" OverridesDefaultStyle="False" Visibility="Visible" Panel.ZIndex="100">
+                                <Grid Height="185" HorizontalAlignment="Center" x:Name="gridIdentifiers" VerticalAlignment="Center" Width="477.75" UseLayoutRounding="False" Background="#FF790000" OverridesDefaultStyle="False" Visibility="Visible" Panel.ZIndex="100" Margin="203.25,12.5,235,12.5">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="19*" />
-                                        <ColumnDefinition Width="490.5*" />
+                                        <ColumnDefinition Width="22*" />
+                                        <ColumnDefinition Width="541*" />
+                                        <ColumnDefinition Width="21*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Label Content="Metadatový záznam obsahuje více identifikátorů." HorizontalAlignment="Left" Margin="14,4,0,90.768" x:Name="label1" Foreground="White" FontWeight="Light" FontSize="20" FontStretch="Normal" Grid.ColumnSpan="2" />
-                                    <RadioButton Content="Jedná se o více svazkovou monografii" Height="20" HorizontalAlignment="Left" Margin="0,44,0,0" x:Name="radioMultipartMonography" VerticalAlignment="Top" Foreground="White" GroupName="radioMultipart" FontWeight="Normal" FontSize="14" IsEnabled="True" IsChecked="True" Click="radioMultipartMonography_Click" Grid.Column="1" />
-                                    <RadioButton Content="Jedná se o koedici" Foreground="White" GroupName="radioMultipart" Height="20" HorizontalAlignment="Right" Margin="0,44,83.957,0" x:Name="radioMultipartCoedition" VerticalAlignment="Top" FontWeight="Normal" FontSize="14" Click="radioMultipartCoedition_Click" Grid.Column="1" />
-                                    <ComboBox Height="33" HorizontalAlignment="Left" Margin="148,94,0,0" x:Name="multipartIdentifierOwn" VerticalAlignment="Top" Width="332" FontSize="14" SelectedIndex="-1" Padding="10,6" SelectionChanged="multipartIdentifierOwn_SelectionChanged" Grid.Column="1"/>
+                                    <Label Content="Metadatový záznam obsahuje více identifikátorů." HorizontalAlignment="Left" Margin="14,4,0,91" x:Name="label1" Foreground="White" FontWeight="Light" FontSize="20" FontStretch="Normal" Grid.ColumnSpan="2" />
+                                    <RadioButton Content="Existuje souborný záznam" Height="20" HorizontalAlignment="Left" Margin="0,44,0,0" x:Name="radioMultipartMonography" VerticalAlignment="Top" Foreground="White" GroupName="radioMultipart" FontWeight="Normal" FontSize="14" IsEnabled="True" IsChecked="True" Click="radioMultipartMonography_Click" Grid.Column="1" />
+                                    <RadioButton Content="Bez souborného záznamu" Foreground="White" GroupName="radioMultipart" Height="20" HorizontalAlignment="Right" Margin="0,44,0,0" x:Name="radioMultipartCoedition" VerticalAlignment="Top" FontWeight="Normal" FontSize="14" Click="radioMultipartCoedition_Click" Grid.Column="1" />
+                                    <ComboBox Height="33" HorizontalAlignment="Left" Margin="167,94,0,0" x:Name="multipartIdentifierOwn" VerticalAlignment="Top" Width="283" FontSize="14" SelectedIndex="-1" Padding="10,6" SelectionChanged="multipartIdentifierOwn_SelectionChanged" Grid.Column="1" Grid.ColumnSpan="2"/>
                                     <Label Content="Skenovaný dokument:" Height="28" HorizontalAlignment="Left" Margin="14,94,0,0" x:Name="multipartIdentifierOwnLabel" VerticalAlignment="Top" Foreground="White" FontSize="14" Grid.ColumnSpan="2" />
-                                    <ComboBox FontSize="14" Height="33" HorizontalAlignment="Right" Margin="0,130,10.5,0" x:Name="multipartIdentifierUnion" VerticalAlignment="Top" Width="332" Padding="10,6" SelectionChanged="multipartIdentifierUnion_SelectionChanged" Grid.Column="1" />
+                                    <ComboBox FontSize="14" Height="33" HorizontalAlignment="Right" Margin="0,130,10,0" x:Name="multipartIdentifierUnion" VerticalAlignment="Top" Width="283" Padding="10,6" SelectionChanged="multipartIdentifierUnion_SelectionChanged" Grid.Column="1" Grid.ColumnSpan="2" />
                                     <Label Content="Souborný záznam:" FontSize="14" Foreground="White" Height="28" HorizontalAlignment="Left" Margin="14,132,0,0" x:Name="multipartIdentifierUnionLabel" VerticalAlignment="Top" IsEnabled="True" Grid.ColumnSpan="2" />
                                     <CheckBox Content="Část s nevýznamným názvem" Height="20" HorizontalAlignment="Left" Margin="0,68,0,0" x:Name="checkboxMinorPartName" VerticalAlignment="Top" FontSize="14" Foreground="White" Click="checkboxMinorPartName_Click" Grid.Column="1" />
                                 </Grid>
@@ -421,7 +424,7 @@
                 </ScrollViewer>
             </Grid>
         </TabItem>
-        <TabItem Header="Zpracování" Name="controlTabItem" IsEnabled="False">
+        <TabItem Header="Zpracování" x:Name="controlTabItem" IsEnabled="False">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" MinWidth="230" />
@@ -441,18 +444,18 @@
                     </Grid.Background>
                     <Grid VerticalAlignment="Top" HorizontalAlignment="Left">
                         <Label Content="Název" Foreground="#858585" FontFamily="Arial" Margin="10,20,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                        <Label Name="controlTitle" Foreground="#CECECE" FontFamily="Arial" Margin="80,20,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Label x:Name="controlTitle" Foreground="#CECECE" FontFamily="Arial" Margin="80,20,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
                         <Label Content="Autoři" Foreground="#858585" FontFamily="Arial" Margin="10,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                        <Label Name="controlAuthors" Foreground="#CECECE" FontFamily="Arial" Margin="80,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Label x:Name="controlAuthors" Foreground="#CECECE" FontFamily="Arial" Margin="80,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
                         <Label Content="Rok vydání" Foreground="#858585" FontFamily="Arial" Margin="10,60,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                        <Label Name="controlYear" Foreground="#CECECE" FontFamily="Arial" Margin="80,60,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
+                        <Label x:Name="controlYear" Foreground="#CECECE" FontFamily="Arial" Margin="80,60,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
                         <Label Content="Identifikátory" Foreground="#858585" FontFamily="Arial" Margin="10,100,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" />
-                        <Grid Name="controlIdentifiersGrid" Margin="10,120,0,0" />
+                        <Grid x:Name="controlIdentifiersGrid" Margin="10,120,0,0" />
                     </Grid>
-                    <Image Name="controlTabDoneIcon" Source="/CDArcha_klient;component/Images/ok-icon-hourglass.png" Stretch="Uniform" VerticalAlignment="Top" HorizontalAlignment="Center" Width="90" Margin="70,196,70,0" />
-                    <Button Name="controlNewUnitButton" Content="Archivace nového titulu" Height="35" Cursor="Hand" HorizontalAlignment="Left" Margin="21,466,0,0" Background="#5E5E5E" Foreground="#CECECE" VerticalAlignment="Top" Width="188" BorderThickness="0" Style="{StaticResource MyButton}" ClickMode="Press" Click="controlNewUnitButton_Click" ToolTip="Ukončit archivaci aktuálního titulu. Archivovat médium jiného titulu." />
-                    <Button Background="#5E5E5E" BorderThickness="0" ClickMode="Press" Content="Archivovat další médium" Cursor="Hand" Foreground="#CECECE" Height="35" HorizontalAlignment="Left" Margin="22,354,0,0" Name="controlSameUnitButton" Style="{StaticResource MyButton}" ToolTip="Pokračovat v archivaci stejného titulu. Archivovat další médium stejného titulu." VerticalAlignment="Top" Width="188" Click="controlSameUnitButton_Click" />
-                    <Button BorderBrush="#b7da86" BorderThickness="1" Content="ZOBRAZIT VÝSLEDEK" Cursor="Hand" Foreground="White" HorizontalAlignment="Left" Name="zobrazitVysledek" Style="{StaticResource MyButton}" ToolTip="Odeslat všechno na obalkyknih.cz" Width="188" Height="35" VerticalAlignment="Top" Click="zobrazitVysledek_Click" Margin="22,543,0,0">
+                    <Image x:Name="controlTabDoneIcon" Source="/CDArcha_klient;component/Images/ok-icon-hourglass.png" Stretch="Uniform" VerticalAlignment="Top" HorizontalAlignment="Center" Width="90" Margin="70,196,70,0" />
+                    <Button x:Name="controlNewUnitButton" Content="Archivace nového titulu" Height="35" Cursor="Hand" HorizontalAlignment="Left" Margin="21,466,0,0" Background="#5E5E5E" Foreground="#CECECE" VerticalAlignment="Top" Width="188" BorderThickness="0" Style="{StaticResource MyButton}" ClickMode="Press" Click="controlNewUnitButton_Click" ToolTip="Ukončit archivaci aktuálního titulu. Archivovat médium jiného titulu." />
+                    <Button Background="#5E5E5E" BorderThickness="0" ClickMode="Press" Content="Archivovat další médium" Cursor="Hand" Foreground="#CECECE" Height="35" HorizontalAlignment="Left" Margin="22,354,0,0" x:Name="controlSameUnitButton" Style="{StaticResource MyButton}" ToolTip="Pokračovat v archivaci stejného titulu. Archivovat další médium stejného titulu." VerticalAlignment="Top" Width="188" Click="controlSameUnitButton_Click" />
+                    <Button BorderBrush="#b7da86" BorderThickness="1" Content="ZOBRAZIT VÝSLEDEK" Cursor="Hand" Foreground="White" HorizontalAlignment="Left" x:Name="zobrazitVysledek" Style="{StaticResource MyButton}" ToolTip="Odeslat všechno na obalkyknih.cz" Width="188" Height="35" VerticalAlignment="Top" Click="zobrazitVysledek_Click" Margin="22,543,0,0">
                         <Button.Background>
                             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                                 <GradientStop Color="#89c23d" Offset="0.0" />
@@ -469,7 +472,7 @@
                     <Button x:Name="controlNewUnitButton_Copy1" Content="Ukončit archivaci i aplikaci" Height="35" Cursor="Hand" HorizontalAlignment="Left" Margin="21,591,0,10" Background="#FF6C3131" Foreground="#CECECE" VerticalAlignment="Bottom" Width="188" BorderThickness="0" Style="{StaticResource MyButton}" ClickMode="Press" ToolTip="Ukončit archivaci aktuálního titulu. Archivovat médium jiného titulu." Click="quitApp" />
                 </Grid>
                 <!--Right pannel-->
-                <Grid Grid.Column="2" Margin="200,0,0,0" Visibility="Visible" Name="tab3FinishGrid">
+                <Grid Grid.Column="2" Margin="200,0,0,0" Visibility="Visible" x:Name="tab3FinishGrid">
                     <Grid.Background>
                         <ImageBrush Viewport="0,0,218,218" ViewportUnits="Absolute" Stretch="None" TileMode="Tile" ImageSource="/CDArcha_klient;component/Images/ok-background-center.png" />
                     </Grid.Background>
@@ -538,8 +541,8 @@
                 </ScrollViewer>
             </Grid>
         </TabItem>
-        <TabItem Header="Skenování" Name="scanningTabItem" Visibility="Visible">
-            <Grid Name="scanningGrid">
+        <TabItem Header="Skenování" x:Name="scanningTabItem" Visibility="Visible">
+            <Grid x:Name="scanningGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" MinWidth="230" MaxWidth="500" />
                     <ColumnDefinition Width="Auto" />
@@ -547,12 +550,12 @@
                     <ColumnDefinition Width="233" MinWidth="233" MaxWidth="233" />
                 </Grid.ColumnDefinitions>
                 <!--Left pannel-->
-                <Grid Grid.Column="0" Name="leftScanningGrid">
+                <Grid Grid.Column="0" x:Name="leftScanningGrid">
                     <Grid.Background>
                         <ImageBrush Viewport="0,0,204,204" ViewportUnits="Absolute" Stretch="None" TileMode="Tile"
                                     ImageSource="/CDArcha_klient;component/Images/ok-background-left.png"/>
                     </Grid.Background>
-                    <Label HorizontalAlignment="Left" Margin="10,10,0,0" Name="thumbnailsTitleLabel" VerticalAlignment="Top" 
+                    <Label HorizontalAlignment="Left" Margin="10,10,0,0" x:Name="thumbnailsTitleLabel" VerticalAlignment="Top" 
                                FontFamily="Arial" Foreground="#CECECE" />
                     <src:MyScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Hidden" Margin="0,40,0,0">
                         <Grid>
@@ -565,15 +568,15 @@
                                    VerticalAlignment="Top" Height="25" Grid.Row="0" />
                             <Border BorderThickness="4" VerticalAlignment="Top" HorizontalAlignment="Center"
                                     Grid.Row="0"  Margin="50,30">
-                                <Image Name="coverThumbnail" VerticalAlignment="Top" MouseLeftButtonDown="Thumbnail_Clicked" 
+                                <Image x:Name="coverThumbnail" VerticalAlignment="Top" MouseLeftButtonDown="Thumbnail_Clicked" 
                                        Stretch="Uniform" Source="/CDArcha_klient;component/Images/default-icon.png" Cursor="Hand"
                                        IsEnabled="False" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" />
                             </Border>
                             <Image Source="/CDArcha_klient;component/Images/ok-icon-delete.png" Width="18" Stretch="Uniform"
-                                   Name="deleteCoverIcon" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="26,30"
+                                   x:Name="deleteCoverIcon" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="26,30"
                                    Visibility="Hidden" Cursor="Hand" MouseLeftButtonDown="CoverThumbnail_Delete"/>
                             <Label Content="Booklet" Foreground="#CECECE" HorizontalAlignment="Center" Height="25" FontFamily="Arial" Grid.Row="1" Margin="92,0,92,57" VerticalAlignment="Top" />
-                            <Label Name="tocPagesNumber" Content="0 stran" Foreground="#B6B6B6" Margin="0,15" HorizontalAlignment="Center"
+                            <Label x:Name="tocPagesNumber" Content="0 stran" Foreground="#B6B6B6" Margin="0,15" HorizontalAlignment="Center"
                                VerticalAlignment="Top" Height="25" FontFamily="Arial" Grid.Row="1" />
                             <src:MyListView x:Name="tocImagesList" VerticalAlignment="Top" Margin="0,40" Grid.Row="1"
                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Background="Transparent" BorderThickness="0">
@@ -591,7 +594,7 @@
                         <ImageBrush Viewport="0,0,218,218" ViewportUnits="Absolute" Stretch="None" TileMode="Tile"
                                     ImageSource="/CDArcha_klient;component/Images/ok-background-center.png"/>
                     </Grid.Background>
-                    <Image HorizontalAlignment="Center" Margin="20" Name="selectedImage" VerticalAlignment="Center"
+                    <Image HorizontalAlignment="Center" Margin="20" x:Name="selectedImage" VerticalAlignment="Center"
                            Source="/CDArcha_klient;component/Images/default-icon.png" Stretch="Uniform" SizeChanged="SelectedImage_SizeChanged" />
                 </Grid>
                 <!--Right pannel-->
@@ -610,31 +613,31 @@
                             <!--Main transformation-->
                             <Grid Margin="0,40,0,0" VerticalAlignment="Top" HorizontalAlignment="Center">
                                 <Image Height="55" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0" Stretch="Uniform" Width="55" 
-                               Name="rotateLeftIcon" Source="/CDArcha_klient;component/Images/ok-icon-90left.png" IsEnabled="False"
+                               x:Name="rotateLeftIcon" Source="/CDArcha_klient;component/Images/ok-icon-90left.png" IsEnabled="False"
                                MouseLeftButtonDown="RotateLeft_Clicked" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" 
                                ToolTip="Otočit obrázek o 90° vlevo (Ctrl+šipka vlevo)" Cursor="Hand" />
                                 <Image Height="55" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="70,0,0,0" Stretch="Uniform" Width="55" 
-                               Name="rotateRightIcon" Source="/CDArcha_klient;component/Images/ok-icon-90right.png" IsEnabled="False" 
+                               x:Name="rotateRightIcon" Source="/CDArcha_klient;component/Images/ok-icon-90right.png" IsEnabled="False" 
                                MouseLeftButtonDown="RotateRight_Clicked" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" 
                                ToolTip="Otočit obrázek o 90° vpravo (Ctrl+šipka vpravo)" Cursor="Hand" />
                                 <Image Height="55" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="140,0,0,0" Stretch="Uniform" Width="55" 
-                               Name="rotate180Icon" Source="/CDArcha_klient;component/Images/ok-icon-180.png" IsEnabled="False"
+                               x:Name="rotate180Icon" Source="/CDArcha_klient;component/Images/ok-icon-180.png" IsEnabled="False"
                                MouseLeftButtonDown="Rotate180_Clicked" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"
                                ToolTip="Otočit obrázek o 180° (Ctrl+R)" Cursor="Hand" />
                                 <Image Height="55" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,60,0,0" Stretch="Uniform" Width="55" 
-                               Name="deskewIcon" Source="/CDArcha_klient;component/Images/ok-icon-align.png" IsEnabled="False"
+                               x:Name="deskewIcon" Source="/CDArcha_klient;component/Images/ok-icon-align.png" IsEnabled="False"
                                MouseLeftButtonDown="Deskew_Clicked" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"
                                ToolTip="Narovnat mírnou rotaci podle sklonu textu" Cursor="Hand" />
                                 <Image Height="55" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="70,60,0,0" Stretch="Uniform" Width="55" 
-                               Name="flipIcon" Source="/CDArcha_klient;component/Images/ok-icon-mirror.png" IsEnabled="False"
+                               x:Name="flipIcon" Source="/CDArcha_klient;component/Images/ok-icon-mirror.png" IsEnabled="False"
                                MouseLeftButtonDown="Flip_Clicked" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"
                                ToolTip="Zrcadlově překlopit obrázek (Ctrl+H)" Cursor="Hand" />
                                 <Image Height="55" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="140,60,0,0" Stretch="Uniform" Width="55" 
-                               Name="cropIcon" Source="/CDArcha_klient;component/Images/ok-icon-crop.png" IsEnabled="False"
+                               x:Name="cropIcon" Source="/CDArcha_klient;component/Images/ok-icon-crop.png" IsEnabled="False"
                                MouseLeftButtonDown="Crop_Clicked" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"
                                ToolTip="Ořezat obrázek (Ctrl+C)" Cursor="Hand" />
                                 <Image Height="55" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="140,102,0,0" Stretch="Uniform" Width="55" 
-                               Name="saveSelectedButton" Source="/CDArcha_klient;component/Images/ok-icon-crop-new.png"
+                               x:Name="saveSelectedButton" Source="/CDArcha_klient;component/Images/ok-icon-crop-new.png"
                                MouseLeftButtonDown="SaveSelectedButton_Clicked" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"
                                ToolTip="Uložit vybranou část (Ctrl+H)" Cursor="Hand"/>
                             </Grid>
@@ -644,7 +647,7 @@
                                Source="/CDArcha_klient;component/Images/ok-icon-brightness.png" />
                                 <Label Content="Jas" Margin="20,0,0,0" FontFamily="Arial" Foreground="#5E5E5E" VerticalAlignment="Top"
                                HorizontalAlignment="Left"/>
-                                <Slider Name="brightnessSlider" Style="{StaticResource MyCustomStyleForSlider}" Width="160" Height="25"
+                                <Slider x:Name="brightnessSlider" Style="{StaticResource MyCustomStyleForSlider}" Width="160" Height="25"
                                 Foreground="#5E5E5E" VerticalAlignment="Top" Margin="0,20,40,0"
                                 Minimum="-255" Maximum="255" Value="0" Ticks="0" SmallChange="5" SelectionStart="-255"
                                 SelectionEnd="255" IsEnabled="False" AutoToolTipPrecision="0" Cursor="Hand" 
@@ -655,7 +658,7 @@
                                Margin="0,45,0,0" Source="/CDArcha_klient;component/Images/ok-icon-contrast.png" />
                                 <Label Content="Kontrast" Margin="20,45,0,0" FontFamily="Arial" Foreground="#5E5E5E" VerticalAlignment="Top"
                                HorizontalAlignment="Left"/>
-                                <Slider Name="contrastSlider" Style="{StaticResource MyCustomStyleForSlider}" Width="160" Height="25"
+                                <Slider x:Name="contrastSlider" Style="{StaticResource MyCustomStyleForSlider}" Width="160" Height="25"
                                 Foreground="#5E5E5E" VerticalAlignment="Top" Margin="0,65,40,0" Cursor="Hand" 
                                 Minimum="-100" Maximum="100" Value="0" Ticks="0" SmallChange="5" SelectionStart="-100"
                                 SelectionEnd="100" IsEnabled="False" AutoToolTipPrecision="0"
@@ -666,13 +669,13 @@
                                Margin="0,90,0,0" Source="/CDArcha_klient;component/Images/ok-icon-gamma.png" />
                                 <Label Content="Gamma" Margin="20,90,0,0" FontFamily="Arial" Foreground="#5E5E5E" VerticalAlignment="Top"
                                HorizontalAlignment="Left"/>
-                                <Slider Name="gammaSlider" Style="{StaticResource MyCustomStyleForSlider}" Width="160" Height="25"
+                                <Slider x:Name="gammaSlider" Style="{StaticResource MyCustomStyleForSlider}" Width="160" Height="25"
                                 Foreground="#5E5E5E" VerticalAlignment="Top" Margin="0,110,40,0" Cursor="Hand"
                                 Minimum="0" Maximum="2" Value="1" Ticks="1" SmallChange="1" IsEnabled="False" AutoToolTipPrecision="1"
                                 AutoToolTipPlacement="TopLeft" IsSnapToTickEnabled="False"
                                 MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave"
                                 ToolTip="Nastavte hodnotu gamma a potvrďte tlačítkem OK" ValueChanged="GammaSlider_ValueChanged" />
-                                <Button Width="40" Height="30" Name="sliderConfirmButton" Content="OK" Cursor="Hand" IsEnabled="False"
+                                <Button Width="40" Height="30" x:Name="sliderConfirmButton" Content="OK" Cursor="Hand" IsEnabled="False"
                                 HorizontalAlignment="Right" Margin="0,62,0,0" Foreground="#CECECE" BorderBrush="#656565"
                                 VerticalAlignment="Top" BorderThickness="1" Style="{StaticResource MyButton}" 
                                 Click="SliderConfirmButton_Click" ToolTip="Potvrdit změnu jasu a kontrastu">
@@ -686,7 +689,7 @@
                             </Grid>
                             <!--Scanning and image loading-->
                             <Grid Margin="34,343,34,0" VerticalAlignment="Top" HorizontalAlignment="Center" Height="214">
-                                <Button Name="scanCoverButton" Content="Skenovat médium" Height="30" Click="ScanCoverButton_Click"
+                                <Button x:Name="scanCoverButton" Content="Skenovat médium" Height="30" Click="ScanCoverButton_Click"
                                 HorizontalAlignment="Center" Margin="0,0,0,0" Foreground="#CECECE" BorderBrush="#656565"
                                 VerticalAlignment="Top" Width="165" BorderThickness="1" Style="{StaticResource MyButton}"
                                 Cursor="Hand" ToolTip="Naskenovat obrázek disku/média">
@@ -697,7 +700,7 @@
                                         </LinearGradientBrush>
                                     </Button.Background>
                                 </Button>
-                                <Button Name="scanTocButton" Content="Skenovat booklet" Height="30" Click="ScanTocButton_Click"
+                                <Button x:Name="scanTocButton" Content="Skenovat booklet" Height="30" Click="ScanTocButton_Click"
                                 HorizontalAlignment="Center" Margin="0,64,0,0" Foreground="#CECECE" BorderBrush="#656565"
                                 VerticalAlignment="Top" Width="165" BorderThickness="1" Style="{StaticResource MyButton}" 
                                 Cursor="Hand" ToolTip="Naskenovat obrázky bookletu">
@@ -708,16 +711,16 @@
                                         </LinearGradientBrush>
                                     </Button.Background>
                                 </Button>
-                                <Label Name="loadFromFileLabel" Content="Načíst ze souboru" FontFamily="Arial" Foreground="#FF1E1E1E"
+                                <Label x:Name="loadFromFileLabel" Content="Načíst ze souboru" FontFamily="Arial" Foreground="#FF1E1E1E"
                                Margin="37,0,29,62" HorizontalAlignment="Center" Cursor="Hand"
                                ToolTip="Načíst obrázek ze souboru, po kliknutí vyberte zda chcete načíst obálku nebo obsah"
                                MouseLeftButtonDown="LoadFromFile_Clicked" MouseEnter="Icon_MouseEnter" MouseLeave="Icon_MouseLeave" Height="24" VerticalAlignment="Bottom" />
-                                <Label Content="A5" Height="28" HorizontalAlignment="Left" Margin="28,30,0,0" Name="scanCoverA5" VerticalAlignment="Top" Foreground="#FF5E5E5E" MouseLeftButtonUp="scanA5CoverButton_MouseLeftButtonUp" Cursor="Hand" />
-                                <Label Content="A4" Foreground="#FF5E5E5E" Height="28" HorizontalAlignment="Right" Margin="0,30,72,0" Name="scanCoverA4" VerticalAlignment="Top" MouseLeftButtonUp="scanA4CoverButton_MouseLeftButtonUp" Cursor="Hand" />
-                                <Label Content="A3" Foreground="#FF5E5E5E" Height="28" HorizontalAlignment="Left" Margin="116,30,0,0" Name="scanCoverA3" VerticalAlignment="Top" MouseLeftButtonUp="scanA3CoverButton_MouseLeftButtonUp" Cursor="Hand" />
-                                <Label Content="A5" Foreground="#FF5E5E5E" Height="28" HorizontalAlignment="Left" Margin="28,94,0,0" Name="scanTocA5" VerticalAlignment="Top" MouseLeftButtonUp="scanA5TocButton_MouseLeftButtonUp" Cursor="Hand" />
-                                <Label Content="A4" Foreground="#FF5E5E5E" Height="28" HorizontalAlignment="Left" Margin="69,94,0,0" Name="scanTocA4" VerticalAlignment="Top" MouseLeftButtonUp="scanA4TocButton_MouseLeftButtonUp" Cursor="Hand" />
-                                <Label Content="A3" Foreground="#FF5E5E5E" Height="28" HorizontalAlignment="Left" Margin="116,94,0,0" Name="scanTocA3" VerticalAlignment="Top" MouseLeftButtonUp="scanA3TocButton_MouseLeftButtonUp" Cursor="Hand" />
+                                <Label Content="A5" Height="28" HorizontalAlignment="Left" Margin="28,30,0,0" x:Name="scanCoverA5" VerticalAlignment="Top" Foreground="#FF5E5E5E" MouseLeftButtonUp="scanA5CoverButton_MouseLeftButtonUp" Cursor="Hand" />
+                                <Label Content="A4" Foreground="#FF5E5E5E" Height="28" HorizontalAlignment="Right" Margin="0,30,72,0" x:Name="scanCoverA4" VerticalAlignment="Top" MouseLeftButtonUp="scanA4CoverButton_MouseLeftButtonUp" Cursor="Hand" />
+                                <Label Content="A3" Foreground="#FF5E5E5E" Height="28" HorizontalAlignment="Left" Margin="116,30,0,0" x:Name="scanCoverA3" VerticalAlignment="Top" MouseLeftButtonUp="scanA3CoverButton_MouseLeftButtonUp" Cursor="Hand" />
+                                <Label Content="A5" Foreground="#FF5E5E5E" Height="28" HorizontalAlignment="Left" Margin="28,94,0,0" x:Name="scanTocA5" VerticalAlignment="Top" MouseLeftButtonUp="scanA5TocButton_MouseLeftButtonUp" Cursor="Hand" />
+                                <Label Content="A4" Foreground="#FF5E5E5E" Height="28" HorizontalAlignment="Left" Margin="69,94,0,0" x:Name="scanTocA4" VerticalAlignment="Top" MouseLeftButtonUp="scanA4TocButton_MouseLeftButtonUp" Cursor="Hand" />
+                                <Label Content="A3" Foreground="#FF5E5E5E" Height="28" HorizontalAlignment="Left" Margin="116,94,0,0" x:Name="scanTocA3" VerticalAlignment="Top" MouseLeftButtonUp="scanA3TocButton_MouseLeftButtonUp" Cursor="Hand" />
                                 <Button x:Name="sendButton" Content="Odeslat" Height="30" BorderBrush="#b7da86" Cursor="Hand"
                                 HorizontalAlignment="Center" Margin="0,178,0,0" Foreground="White" ToolTip="Odeslat všechno na obalkyknih.cz"
                                 VerticalAlignment="Top" Width="165" BorderThickness="1" Style="{StaticResource MyButton}" Click="SendCoverToc_Click">
@@ -731,11 +734,11 @@
                             </Grid>
                             <!--Sending to obalkyknih.cz-->
                             <Grid Margin="34,571,34,0" VerticalAlignment="Bottom" HorizontalAlignment="Center">
-                                <CheckBox Name="ocrCheckBox" Content="Použít OCR" Margin="0,40,0,0" FontFamily="Arial" Foreground="#5E5E5E"
+                                <CheckBox x:Name="ocrCheckBox" Content="Použít OCR" Margin="0,40,0,0" FontFamily="Arial" Foreground="#5E5E5E"
                                   VerticalAlignment="Top" HorizontalAlignment="Center" ToolTip="Použít OCR na odeslaný obsah" Visibility="Hidden" IsChecked="True" />
                             </Grid>
-                            <Separator Height="5" HorizontalAlignment="Left" Margin="36,466,0,0" Name="separator3" VerticalAlignment="Top" Width="163" />
-                            <Button Name="saveSelecteModeButton" Content="Výsekový režim" Height="21" Click="SaveSelectedMode_Clicked"
+                            <Separator Height="5" HorizontalAlignment="Left" Margin="36,466,0,0" x:Name="separator3" VerticalAlignment="Top" Width="163" />
+                            <Button x:Name="saveSelecteModeButton" Content="Výsekový režim" Height="21" Click="SaveSelectedMode_Clicked"
                                 HorizontalAlignment="Center" Margin="19,159,95,0" Foreground="#CECECE" BorderBrush="#656565"
                                 VerticalAlignment="Top" Width="119" BorderThickness="1" Style="{StaticResource MyButton}"
                                 Cursor="Hand" ToolTip="Zapnout výsekový režim">

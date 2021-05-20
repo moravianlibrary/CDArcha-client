@@ -45,9 +45,32 @@ namespace CDArcha_klient
         {
             InitializeComponent();
             InitializeBackgroundWorkers();
+
             if (!Directory.Exists(Settings.TemporaryFolder))
             {
                 Directory.CreateDirectory(Settings.TemporaryFolder);
+            }
+
+            // Pokus o zapis do docasneho adresare definovaneho v nastavenich jako zkouska schopnosti zapisu
+            try
+            {
+                System.IO.File.WriteAllText(Path.Combine(Settings.TmpDir, "test.txt"), "test zapisu");
+                System.IO.File.Delete(Path.Combine(Settings.TmpDir, "test.txt"));
+            }
+            catch (Exception)
+            {
+                Settings.TmpDir = Settings.TemporaryFolder;
+            }
+
+            // Promazani docasnych souboru
+            string targetDirectory = Path.GetDirectoryName(Settings.tmpPathToIso);
+            string[] fileEntries = Directory.GetFiles(targetDirectory);
+            foreach (string fileName in fileEntries)
+            {
+                if (fileName.IndexOf("working") >= 0)
+                {
+                    File.Delete(fileName);
+                }
             }
 
             //Show version changes
@@ -70,7 +93,7 @@ namespace CDArcha_klient
                 showTmpFolderBtn.Visibility = Visibility.Visible;
                 tmpFolderLabel.Visibility = Visibility.Visible;
             }
-            
+
             #region commandBindings
 
             //new - Ctrl + N

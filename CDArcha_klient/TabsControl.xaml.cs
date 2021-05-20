@@ -916,8 +916,6 @@ namespace CDArcha_klient
                 if (!char.IsDigit(year[0])) year = year.Substring(1);
                 if (year.Length > 0 && !char.IsDigit(year[year.Length - 1])) year = year.Substring(0, year.Length - 1);
                 this.partYearTextBox.Text = year;
-                //this.partNumberTextBox.Text = tmpRecord.PartNo; //na zadost p.Zahorika automaticky nedoplnovat
-                //this.partNameTextBox.Text = tmpRecord.PartName;
                 this.partIsbnTextBox.Text = tmpRecord.PartIsbn;
                 if (string.IsNullOrWhiteSpace(this.partIsbnTextBox.Text)) this.partIsbnTextBox.Text = tmpRecord.PartEan;
                 this.partCnbTextBox.Text = tmpRecord.PartCnb;
@@ -940,6 +938,7 @@ namespace CDArcha_klient
                 if (tmpRecord.listIdentifiers.Count > 2)
                 {
                     this.gridIdentifiers.Visibility = Visibility.Visible;
+                    this.expanderStep0.IsExpanded = true;
                     ComboboxItem emptyItem = new ComboboxItem();
                     emptyItem.Text = "";
                     emptyItem.Value = null;
@@ -964,8 +963,11 @@ namespace CDArcha_klient
                     // pokud je jako skenovany dokument zvoleny prvni zaznam, musi byt
                     if (partComboIndex == unionComboIndex) unionComboIndex = 0;
 
-                    this.multipartIdentifierOwn.SelectedIndex = partComboIndex == -1 ? 1 : partComboIndex;
+                    partComboIndex = partComboIndex == -1 ? 1 : partComboIndex;
+                    this.multipartIdentifierOwn.SelectedIndex = partComboIndex;
                     this.multipartIdentifierUnion.SelectedIndex = unionComboIndex;
+                    this.multipartIdentifierOwn_SelectionChanged(this, null);
+                    this.multipartIdentifierUnion_SelectionChanged(this, null);
 
                     // multipart monography visual workaround
                     this.partNumberLabel.Visibility = Visibility.Visible;
@@ -980,16 +982,19 @@ namespace CDArcha_klient
                     this.gridToc.VerticalAlignment = VerticalAlignment.Top;
 
                     // fill part/union texts
-                    //if (partComboIndex > -1) this.partNameTextBox.Text = tmpRecord.listIdentifiers[partComboIndex].IdentifierDescription;
-                    if (unionComboIndex > -1) this.isbnTextBox.Text = tmpRecord.listIdentifiers[unionComboIndex].IdentifierCode;
+                    this.partNameTextBox.Text = (partComboIndex > -1) ? tmpRecord.listIdentifiers[partComboIndex].IdentifierDescription : "";
+                    this.partIsbnTextBox.Text = (partComboIndex > -1) ? tmpRecord.listIdentifiers[partComboIndex].IdentifierCode : "";
+                    this.isbnTextBox.Text =  (unionComboIndex > 0) ? tmpRecord.listIdentifiers[unionComboIndex].IdentifierCode : "";
                     this.titleTextBox.Text = tmpRecord.PartTitle;
                     this.authorTextBox.Text = tmpRecord.PartAuthors;
                     this.yearTextBox.Text = tmpRecord.PartYear;
+                    /*
                     this.cnbTextBox.Text = tmpRecord.PartCnb;
                     this.oclcTextBox.Text = tmpRecord.PartOclc;
                     this.isbnTextBox.Text = tmpRecord.PartIsbn;
                     this.ismnTextBox.Text = tmpRecord.PartIsmn;
                     this.urnNbnTextBox.Text = tmpRecord.PartUrn;
+                    */
 
                     //is minor by default
                     bool minorIsChecked = tmpRecord.listIdentifiers.Count > 2 ? true : false;
@@ -1006,7 +1011,6 @@ namespace CDArcha_klient
                         this.cnbTextBox.Text = "";
                         this.oclcTextBox.Text = "";
                     }
-                    this.partIsbnTextBox.Text = "";
                     this.partIsmnTextBox.Text = "";
                     this.partUrnNbnTextBox.Text = "";
                 }
@@ -1661,6 +1665,7 @@ namespace CDArcha_klient
         {
             if (uploaderBackgroundWorker.IsBusy)
             {
+                this.logToFile("*err uploaderBackgroundWorker.IsBusy"); //debug log
                 MessageBoxDialogWindow.Show("Odesílání dat", "Počkejte, než se dokončí předchozí odesílání.",
                     "OK", MessageBoxDialogWindow.Icons.Error);
                 return;
@@ -1670,11 +1675,13 @@ namespace CDArcha_klient
             //sw.Start();
             if (string.IsNullOrWhiteSpace(Settings.UserName))
             {
+                this.logToFile("*err Žádné přihlašovací údaje"); //debug log
                 MessageBoxDialogWindow.Show("Žádné přihlašovací údaje", "Nastavte přihlašovací údaje.",
                     "OK", MessageBoxDialogWindow.Icons.Error);
                 return;
             }
 
+            this.logToFile("*5"); //debug log
             Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
                 // progress // log
@@ -1690,7 +1697,9 @@ namespace CDArcha_klient
             }));
 
             // download images of cover and toc
+            this.logToFile("*6 DownloadCoverAndToc"); //debug log
             this.DownloadCoverAndToc();
+            this.logToFile("*7 DownloadCoverAndToc"); //debug log
 
             //data type
             bool isMono = this.generalRecord is Monograph ? true : false;
@@ -1804,6 +1813,7 @@ namespace CDArcha_klient
             if (isMonoPart) nvc.Add("part_type", "mono");
 
             string metaXml = null;
+            this.logToFile("*8"); //debug log
 
             //metastream
             try
@@ -1823,6 +1833,7 @@ namespace CDArcha_klient
                 string osFreePhysicalMemory = "";
                 string osFreeVirtualMemory = "";
                 string driveInfo = "";
+                this.logToFile("*9"); //debug log
                 host = Dns.GetHostEntry(Dns.GetHostName());
                 foreach (IPAddress ip in host.AddressList)
                 {
@@ -1836,6 +1847,7 @@ namespace CDArcha_klient
                     }
                 }
 
+                this.logToFile("*10"); //debug log
                 System.Management.SelectQuery query = new System.Management.SelectQuery(@"Select * from Win32_ComputerSystem");
                 using (System.Management.ManagementObjectSearcher searcher = new System.Management.ManagementObjectSearcher(query))
                 {
@@ -1853,6 +1865,7 @@ namespace CDArcha_klient
                     }
                 }
 
+                this.logToFile("*11"); //debug log
                 query = new System.Management.SelectQuery(@"Select * from Win32_OperatingSystem");
                 using (System.Management.ManagementObjectSearcher searcher = new System.Management.ManagementObjectSearcher(query))
                 {
@@ -1867,6 +1880,7 @@ namespace CDArcha_klient
                     }
                 }
 
+                this.logToFile("*12"); //debug log
                 System.IO.DriveInfo[] drives = System.IO.DriveInfo.GetDrives();
                 foreach (System.IO.DriveInfo drive in drives)
                 {
@@ -1880,6 +1894,7 @@ namespace CDArcha_klient
                     }
                 }
 
+                this.logToFile("*13"); //debug log
                 XNamespace mets = "http://www.loc.gov/METS/";
                 XNamespace mix = "http://www.loc.gov/mix/v20";
                 XElement metsRoot = new XElement("mets",
@@ -1953,16 +1968,18 @@ namespace CDArcha_klient
                 return;
             }
 
+            this.logToFile("*14"); //debug log
             UploadParameters param = new UploadParameters();
             param.Url = Settings.ImportLink;
             param.Nvc = nvc;
 
             param.MetaXml = metaXml;
 
+            this.logToFile("*15"); //debug log
             // transformace MARCXML na MODS
             MetadataRetriever.transformMARC2MODS();
-            //string marcXmlPath = System.IO.Path.Combine(Settings.TmpDir, "marcxml.xml");
-            string modsPath = System.IO.Path.Combine(Settings.TmpDir, "mods.xml");
+            //string marcXmlPath = System.IO.Path.Combine(Settings.TemporaryFolder, "marcxml.xml");
+            string modsPath = System.IO.Path.Combine(Settings.TemporaryFolder, "mods.xml");
             /*if (File.Exists(marcXmlPath))
             {
                 param.MarcXml = File.ReadAllText(marcXmlPath);
@@ -1972,6 +1989,7 @@ namespace CDArcha_klient
                 param.MetaMods = File.ReadAllText(modsPath);
             }
 
+            this.logToFile("*16"); //debug log
             //DEBUGLOG.AppendLine("SendToObalkyKnih part1: Total time: " + sw.ElapsedMilliseconds);
             this.uploaderBackgroundWorker.RunWorkerAsync(param);
 
@@ -2116,6 +2134,7 @@ namespace CDArcha_klient
 
             try
             {
+                this.logToFile("*22 UploadFileToRemoteUrl"); //debug log
                 HttpWebRequest requestToServer = (HttpWebRequest)WebRequest.Create(url + "?version=" + Assembly.GetEntryAssembly().GetName().Version + "&login=" + Settings.UserName + "&password=" + Settings.Password);
 
                 requestToServer.Timeout = 10000;
@@ -2138,6 +2157,7 @@ namespace CDArcha_klient
                 byte[] lastBoundaryStringLineBytes = utf8.GetBytes(lastBoundaryStringLine);
 
 
+                this.logToFile("*23"); //debug log
                 // TEXT PARAMETERS
                 string formDataString = "";
                 foreach (string key in nvc.Keys)
@@ -2150,6 +2170,7 @@ namespace CDArcha_klient
                 }
                 byte[] formDataBytes = utf8.GetBytes(formDataString);
 
+                this.logToFile("*24"); //debug log
                 // META PARAMETER
                 string metaDataString = boundaryStringLine
                     + String.Format(
@@ -2159,6 +2180,7 @@ namespace CDArcha_klient
                     + metaXml + "\r\n";
                 byte[] metaDataBytes = utf8.GetBytes(metaDataString);
 
+                this.logToFile("*25"); //debug log
                 // MARC XML
                 string marcXmlString = boundaryStringLine
                     + String.Format(
@@ -2168,6 +2190,7 @@ namespace CDArcha_klient
                     + marcXml + "\r\n";
                 byte[] marcXmlBytes = utf8.GetBytes(marcXmlString);
 
+                this.logToFile("*26"); //debug log
                 // MODS
                 string metaModsString = boundaryStringLine
                     + String.Format(
@@ -2191,6 +2214,7 @@ namespace CDArcha_klient
                 requestToServer.ContentLength = totalRequestBodySize;
 
 
+                this.logToFile("*27"); //debug log
                 // Write the http request body directly to the server
                 using (Stream s = requestToServer.GetRequestStream())
                 {
@@ -2209,6 +2233,7 @@ namespace CDArcha_klient
                     // Send the last part of the HTTP request body
                     s.Write(lastBoundaryStringLineBytes, 0, lastBoundaryStringLineBytes.Length);
                 }
+                this.logToFile("*28"); //debug log
 
                 //DEBUGLOG.AppendLine("UploadFilesToRemoteUrl (upload data): Total time: " + sw.ElapsedMilliseconds);
 
@@ -2217,11 +2242,13 @@ namespace CDArcha_klient
                     logTextBox.AppendText(DateTime.Now.ToString("dd.MM.yyyy HH:mm:ss") + "  Zasílání identifikátorů a metadat.\r");
                 }));
 
+                this.logToFile("*29"); //debug log
                 WebResponse response = requestToServer.GetResponse();
                 StreamReader responseReader = new StreamReader(response.GetResponseStream());
                 e.Result = responseReader.ReadToEnd();
                 response.Close();
                 requestToServer.Abort();
+                this.logToFile("*30"); //debug log
 
                 //DEBUGLOG.AppendLine("UploadFilesToRemoteUrl: Total time: " + sw.ElapsedMilliseconds);
             }
@@ -2654,10 +2681,12 @@ namespace CDArcha_klient
         // Uploads files to cdarcha server in new thread
         private void UploaderBW_DoWork(object sender, DoWorkEventArgs e)
         {
+            this.logToFile("*20 UploaderBW_DoWork"); //debug log
             BackgroundWorker worker = sender as BackgroundWorker;
             UploadParameters up = e.Argument as UploadParameters;
             if (!Settings.offlineMode)
             {
+                this.logToFile("*21"); //debug log
                 UploadFilesToRemoteUrl(up.Url, up.Nvc, up.MetaXml, up.MarcXml, up.MetaMods, e);
                 this.workingMediaId = (e.Result as string) ?? "";
                 this.lastWorkingMediaId = this.workingMediaId;
@@ -2667,6 +2696,7 @@ namespace CDArcha_klient
         // Shows result of uploading process (OK or error message)
         private void UploaderBW_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            this.logToFile("*31 UploadBW_RunWorkerCompleted"); //debug log
             this.zobrazitVysledek.Visibility = System.Windows.Visibility.Hidden;
             if (e.Error != null)
             {
@@ -5058,10 +5088,8 @@ namespace CDArcha_klient
                 this.collectionRecordGrid.IsEnabled = true;
                 ColumnDefinition cd1 = new ColumnDefinition();
                 cd1.Width = new GridLength(1, GridUnitType.Star);
-                ColumnDefinition cd2 = new ColumnDefinition();
-                cd2.Width = new GridLength(1, GridUnitType.Star);
+                cd1.MinWidth = 230;
                 this.recordGrid.ColumnDefinitions.Add(cd1);
-                this.recordGrid.ColumnDefinitions.Add(cd2);
                 this.metadataCD.MinWidth = this.metadataCD.MinWidth * 2;
                 this.partNameTextBox.Visibility = Visibility.Visible;
                 this.partNameLabel.Visibility = Visibility.Visible;
@@ -5081,7 +5109,7 @@ namespace CDArcha_klient
                 this.metadataCD.Width = new GridLength(metadataCD.ActualWidth / 2);
                 this.collectionRecordGrid.Visibility = Visibility.Collapsed;
                 this.collectionRecordGrid.IsEnabled = false;
-                this.recordGrid.ColumnDefinitions.RemoveRange(0, this.recordGrid.ColumnDefinitions.Count);
+                this.recordGrid.ColumnDefinitions.RemoveRange(1, this.recordGrid.ColumnDefinitions.Count-1);
                 this.metadataCD.MinWidth = this.metadataCD.MinWidth / 2;
                 this.partNameTextBox.Visibility = Visibility.Hidden;
                 this.partNameLabel.Visibility = Visibility.Hidden;
@@ -5519,9 +5547,24 @@ namespace CDArcha_klient
                 start = true;
             }
 
+            //debug log
+            this.logToFile("---------");
+            this.logToFile("*1 btnCreate_Click");
+
             // delete working ISO if exists
-            if (File.Exists(Settings.tmpPathToIso))
-                File.Delete(Settings.tmpPathToIso);
+            this.logToFile("*1 tmpPathToIso="+Settings.tmpPathToIso);
+            try
+            {
+                if (File.Exists(Settings.tmpPathToIso))
+                {
+                    this.logToFile("*1 cisteni" + Settings.tmpPathToIso);
+                    File.Delete(Settings.tmpPathToIso);
+                }
+            }
+            catch (Exception ex)
+            {
+                this.logToFile(ex.ToString());
+            }
 
             if (start)
             {
@@ -5529,8 +5572,20 @@ namespace CDArcha_klient
                 tmpMediaHash = "";
                 workingMediaId = "";
                 hashCheckTryCount = 999;
+                this.logToFile("*2 clearGuiProgress");
                 clearGuiProgress();
+                this.logToFile("*3 clearGuiProgress");
+                this.logToFile("*4 SendToObalkyKnih");
                 SendToObalkyKnih();
+            }
+        }
+
+        private void logToFile(String logText)
+        {
+            string dir = Path.GetTempPath();
+            using (StreamWriter w = File.AppendText(dir + "cdarcha-debug.txt"))
+            {
+                w.WriteLine(logText);
             }
         }
 

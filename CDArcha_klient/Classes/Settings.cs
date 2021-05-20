@@ -951,8 +951,9 @@ namespace CDArcha_klient
             get
             {
                 // default dir
-                string defaultDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-                defaultDir = System.IO.Path.Combine(defaultDir, "cdarcha_tmp");
+                //string defaultDir = System.IO.Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+                string defaultDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                defaultDir = System.IO.Path.Combine(defaultDir, "cdarcha");
                 // loaded from windows registry
                 string tmpDir = GetStringRegistryValue(IsAdminTmpDir, "TmpDir");
                 return string.IsNullOrEmpty(tmpDir) ? defaultDir : tmpDir;
@@ -1042,8 +1043,8 @@ namespace CDArcha_klient
         /// <summary>Version of application</summary>
         internal static Version Version { get { return Assembly.GetEntryAssembly().GetName().Version; } }
 
-        //public const string ip = "http://192.168.56.1:1337";
-        public const string ip = "https://cdarcha.mzk.cz";
+        public const string ip = "http://192.168.1.11:1337";
+        //public const string ip = "https://cdarcha.mzk.cz";
 
         /// <summary>URL of folder containing update-info.xml file</summary>
         internal const string UpdateServer = ip + "/cdarcha_klient";

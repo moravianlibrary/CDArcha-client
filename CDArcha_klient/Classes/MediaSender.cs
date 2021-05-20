@@ -113,8 +113,9 @@ namespace CDArcha_klient.Classes
                     long progress = 0;
                     using (FileStream fs = File.Open(PathToIso, FileMode.Open))
                     {
-                        byte[] buffer = new byte[BUFFER];
-                        while (fs.Read(buffer, 0, BUFFER) > 0)
+                        int bufferSize = (progress + BUFFER > MediumSize) ? Convert.ToInt32(MediumSize - progress) : BUFFER;
+                        byte[] buffer = new byte[bufferSize];
+                        while (fs.Read(buffer, 0, bufferSize) > 0)
                         {
                             if (bgSender.CancellationPending)
                             {
@@ -123,8 +124,8 @@ namespace CDArcha_klient.Classes
                                 break;
                             }
 
-                            st.Write(buffer, 0, BUFFER);
-                            progress += BUFFER;
+                            st.Write(buffer, 0, bufferSize);
+                            progress += bufferSize;
 
                             if (OnProgress != null)
                             {
