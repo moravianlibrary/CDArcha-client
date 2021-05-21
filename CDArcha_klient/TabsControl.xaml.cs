@@ -2253,15 +2253,24 @@ namespace CDArcha_klient
                 //DEBUGLOG.AppendLine("UploadFilesToRemoteUrl: Total time: " + sw.ElapsedMilliseconds);
             }
             catch (WebException ex) {
-                HttpStatusCode wRespStatusCode = ((HttpWebResponse)ex.Response).StatusCode;
-                if (wRespStatusCode == System.Net.HttpStatusCode.Forbidden)
+                try
                 {
-                    MessageBoxDialogWindow.Show("Odesílání dat", "API odmítá spojení. Pravděpodobně se neshoduje verze aplikace s verzí API.",
-                    "OK", MessageBoxDialogWindow.Icons.Error);
+                    HttpStatusCode wRespStatusCode = ((HttpWebResponse)ex.Response).StatusCode;
+
+                    if (wRespStatusCode == System.Net.HttpStatusCode.Forbidden)
+                    {
+                        MessageBoxDialogWindow.Show("Odesílání dat", "API odmítá spojení. Pravděpodobně se neshoduje verze aplikace s verzí API.",
+                        "OK", MessageBoxDialogWindow.Icons.Error);
+                    }
+                    else if (wRespStatusCode == System.Net.HttpStatusCode.Unauthorized)
+                    {
+                        MessageBoxDialogWindow.Show("Odesílání dat", "Špatné přihlašovací jméno, nebo heslo.",
+                        "OK", MessageBoxDialogWindow.Icons.Error);
+                    }
                 }
-                else if (wRespStatusCode == System.Net.HttpStatusCode.Unauthorized)
+                catch
                 {
-                    MessageBoxDialogWindow.Show("Odesílání dat", "Špatné přihlašovací jméno, nebo heslo.",
+                    MessageBoxDialogWindow.Show("Problém s komunikací s API", "API odmítá spojení. Pravděpodobně špatná URL adresa API v nastaveních aplikace.",
                     "OK", MessageBoxDialogWindow.Icons.Error);
                 }
             }

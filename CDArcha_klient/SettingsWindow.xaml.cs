@@ -70,6 +70,9 @@ namespace CDArcha_klient
             this.xServerDatabaseTextBox.IsEnabled = !Settings.IsAdminXServerBase && Settings.IsXServerEnabled;
             this.xServerDatabaseTextBox.Text = Settings.XServerBase;
 
+            this.apiUrlTextBox.IsEnabled = !Settings.IsAdminApiUrl;
+            this.apiUrlTextBox.Text = Settings.ApiUrl;
+
             this.siglaTextBox.IsEnabled = !Settings.IsAdminSigla;
             this.siglaTextBox.Text = Settings.Sigla;
 
@@ -164,7 +167,8 @@ namespace CDArcha_klient
 
             Settings.XServerUrl = this.xServerUrlTextBox.Text;
             Settings.XServerBase = this.xServerDatabaseTextBox.Text;
-            
+
+            Settings.ApiUrl = this.apiUrlTextBox.Text;
             Settings.Sigla = this.siglaTextBox.Text;
             Settings.Base = this.baseTextBox.Text;
 

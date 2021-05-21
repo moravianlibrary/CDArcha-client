@@ -712,6 +712,41 @@ namespace CDArcha_klient
             }
         }
 
+        /// <summary>API URL</summary>
+        internal static string ApiUrl
+        {
+            get
+            {
+                String ApiUrl = GetStringRegistryValue(IsAdminApiUrl, "ApiUrl");
+                return ApiUrl == null ? "https://cdarcha.mzk.cz" : GetStringRegistryValue(IsAdminApiUrl, "ApiUrl");
+            }
+            set
+            {
+                char[] charsToTrim = { ' ', '/' };
+                value = value.Trim(charsToTrim);
+                SetRegistryValue(IsAdminApiUrl, "ApiUrl", value, RegistryValueKind.String);
+
+                // ApiUrl nastavuje tyto dalsi promenne
+                ImportLink = value + "/api/import";
+                UploadLink = value + "/file/upload";
+                UploadCoverLink = value + "/file/coverupload";
+                ChecksumLink = value + "/api/gethash";
+                GetMediaLink = value + "/api/getmedia";
+                GetAllMediaListLink = value + "/api/getallmedialist";
+                CloseArchiveLink = value + "/api/closearchive/?id=";
+                ViewLink = value + "/cdarcha";
+            }
+        }
+
+        /// <summary>Indicates that API URL was filled by admin and can't be changed in application</summary>
+        internal static bool IsAdminApiUrl
+        {
+            get
+            {
+                return AdminSettingsRegistryKey != null && AdminSettingsRegistryKey.GetValue("ApiUrl", null) != null;
+            }
+        }
+
         /// <summary>Base of record - can be different than one in Z39.50 (MZK01-UTF vs MZK01)</summary>
         internal static string Base
         {
@@ -1043,35 +1078,36 @@ namespace CDArcha_klient
         /// <summary>Version of application</summary>
         internal static Version Version { get { return Assembly.GetEntryAssembly().GetName().Version; } }
 
-        public const string ip = "http://192.168.1.11:1337";
-        //public const string ip = "https://cdarcha.mzk.cz";
+        public static string ip = ApiUrl;
+        //public const string ipMaster = "https://cdarcha.mzk.cz";
+        public static string ipClientUpdate = "http://192.168.1.11:1337";
 
         /// <summary>URL of folder containing update-info.xml file</summary>
-        internal const string UpdateServer = ip + "/cdarcha_klient";
+        internal static string UpdateServer = ipClientUpdate + "/cdarcha_klient";
 
         /// <summary>URL of import function on obalkyknih</summary>
-        internal const string ImportLink = ip + "/api/import";
+        internal static string ImportLink = ip + "/api/import";
 
         // <summary>URL to file upload</summary>
-        internal const string UploadLink = ip + "/file/upload";
+        internal static string UploadLink = ip + "/file/upload";
 
         // <summary>URL to file upload cover-toc</summary>
-        internal const string UploadCoverLink = ip + "/file/coverupload";
+        internal static string UploadCoverLink = ip + "/file/coverupload";
 
         // <summary>URL to get checksum and status</summary>
-        internal const string ChecksumLink = ip + "/api/gethash";
+        internal static string ChecksumLink = ip + "/api/gethash";
 
         // <summary>URL to get media by quick media ID</summary>
-        internal const string GetMediaLink = ip + "/api/getmedia";
+        internal static string GetMediaLink = ip + "/api/getmedia";
 
         // <summary>URL to get media by quick media ID</summary>
-        internal const string GetAllMediaListLink = ip + "/api/getallmedialist";
+        internal static string GetAllMediaListLink = ip + "/api/getallmedialist";
 
         // <summary>URL to </summary>
-        internal const string CloseArchiveLink = ip + "/api/closearchive/?id=";
+        internal static string CloseArchiveLink = ip + "/api/closearchive/?id=";
 
         // <summary>URL to view media library</summary>
-        internal const string ViewLink = ip + "/cdarcha";
+        internal static string ViewLink = ip + "/cdarcha";
 
         /// <summary>Returns path to temporary folder, where are stored images opened in external editor and downloaded updates</summary>
         internal static string TemporaryFolder { get { return System.IO.Path.GetTempPath() + "Archivacni-klient\\"; } }
