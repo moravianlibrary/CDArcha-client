@@ -136,6 +136,8 @@ namespace CDArcha_klient
         public string workingMediaId = "";
         public string workingArchiveId = "";
         public string lastWorkingMediaId = "";
+        public string openCloseMediaId = "";
+        public bool archiveClosed = false;
 
         // Posledni vypocteny hash
         public string tmpMediaHash = "";
@@ -4911,7 +4913,7 @@ namespace CDArcha_klient
             discName.Content = "není vložené";
             discVolno.Content = "";
             discSize.Content = "";
-            closeArchive();
+            openCloseArchive();
             (Window.GetWindow(this) as MainWindow).ShowNewUnitWindow();
         }
 
@@ -6016,7 +6018,7 @@ namespace CDArcha_klient
 
         private void quitApp(object sender, RoutedEventArgs e)
         {
-            closeArchive();
+            openCloseArchive();
             System.Windows.Forms.Application.Exit();
         }
 
@@ -6067,7 +6069,10 @@ namespace CDArcha_klient
                             case "3": archiveState.Content = "Připravený k archivaci"; break;
                             case "4": archiveState.Content = "Archivovaný"; break;
                         }
-                        if (obj.status != "0")
+
+                        archiveClosed = obj.status != "0";
+
+                        if (archiveClosed)
                         {
                             disableArchiveControls();
                         } else
@@ -6107,7 +6112,7 @@ namespace CDArcha_klient
                     {
                         if (obj.type == "archive")
                         {
-                            archiveOp.Content = "Můžete pokračovat v archivaci dalšího média archivu: " + sel.Uid;
+                            archiveOp.Content = !this.archiveClosed ? "Můžete pokračovat v archivaci dalšího média archivu: " + sel.Uid : "";
                             mediaNoTextBox.Text = "";
                             scanArchiveItem.Content = "Skenovat obálku vybraného ARCHIVU";
                         }
@@ -6148,25 +6153,39 @@ namespace CDArcha_klient
 
         private void closeArchiveItem_Click(object sender, RoutedEventArgs e)
         {
-            if (!string.IsNullOrEmpty(this.lastWorkingMediaId))
-            {
-                archiveOp.Content = "Archiv byl označen jako ukončený.";
-                archiveState.Content = "Ukončen na klientovi";
-                closeArchive();
-                disableArchiveControls();
-            }
-            else
+            if (string.IsNullOrEmpty(this.lastWorkingMediaId) && string.IsNullOrEmpty(this.openCloseMediaId))
             {
                 MessageBox.Show("Není načten žádný záznam archivu !");
             }
+            else
+            {
+                openCloseArchive();
+            }
         }
 
-        private void closeArchive()
+        private void openCloseArchive()
         {
-            if (!string.IsNullOrEmpty(this.lastWorkingMediaId))
+            string mediaId = this.lastWorkingMediaId;
+            if (string.IsNullOrEmpty(mediaId)) mediaId = this.openCloseMediaId;
+            if (string.IsNullOrEmpty(mediaId)) return;
+
+            string url = "";
+            if (this.archiveClosed)
             {
-                HttpWebRequest requestToServer = (HttpWebRequest)WebRequest.Create(Settings.CloseArchiveLink + this.lastWorkingMediaId);
-                requestToServer.Timeout = 10000;
+                url = Settings.OpenArchiveLink + mediaId;
+            }
+            else
+            {
+                url = Settings.CloseArchiveLink + mediaId;
+            }
+
+            if (!string.IsNullOrEmpty(url))
+            {
+                if (!string.IsNullOrEmpty(this.lastWorkingMediaId)) this.openCloseMediaId = this.lastWorkingMediaId;
+                this.lastWorkingMediaId = null;
+
+                HttpWebRequest requestToServer = (HttpWebRequest)WebRequest.Create(url);
+                requestToServer.Timeout = 1000;
                 requestToServer.Method = WebRequestMethods.Http.Get;
                 requestToServer.ContentType = "text/plain";
                 try
@@ -6174,9 +6193,13 @@ namespace CDArcha_klient
                     WebResponse response = requestToServer.GetResponse();
                     requestToServer.Abort();
                     reloadArchiveList_Click(null, null);
-                    this.lastWorkingMediaId = null;
+                    
                 }
-                catch (Exception e) { }
+                catch (Exception)
+                {
+                    requestToServer.Abort();
+                    reloadArchiveList_Click(null, null);
+                }
             }
         }
 
@@ -6186,10 +6209,10 @@ namespace CDArcha_klient
             {
                 loadMedia.IsEnabled = false;
                 btnCreate.IsEnabled = false;
-                closeArchiveItem.IsEnabled = false;
                 scanArchiveItem.IsEnabled = false;
                 driveList.IsEnabled = false;
                 mediaNoTextBox.IsEnabled = false;
+                closeArchiveItem.Content = "Otevřít archiv";
             }));
         }
 
@@ -6199,10 +6222,10 @@ namespace CDArcha_klient
             {
                 loadMedia.IsEnabled = true;
                 btnCreate.IsEnabled = true;
-                closeArchiveItem.IsEnabled = true;
                 scanArchiveItem.IsEnabled = true;
                 driveList.IsEnabled = true;
                 mediaNoTextBox.IsEnabled = true;
+                closeArchiveItem.Content = "Uzavřít archiv";
             }));
         }
     }

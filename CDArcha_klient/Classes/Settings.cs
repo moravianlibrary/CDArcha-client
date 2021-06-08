@@ -1079,8 +1079,8 @@ namespace CDArcha_klient
         internal static Version Version { get { return Assembly.GetEntryAssembly().GetName().Version; } }
 
         public static string ip = ApiUrl;
-        //public const string ipMaster = "https://cdarcha.mzk.cz";
-        public static string ipClientUpdate = "http://192.168.1.11:1337";
+        public static string ipClientUpdate = "https://cdarcha.mzk.cz";
+        //public static string ipClientUpdate = "http://192.168.1.11:1337";
 
         /// <summary>URL of folder containing update-info.xml file</summary>
         internal static string UpdateServer = ipClientUpdate + "/cdarcha_klient";
@@ -1105,6 +1105,9 @@ namespace CDArcha_klient
 
         // <summary>URL to </summary>
         internal static string CloseArchiveLink = ip + "/api/closearchive/?id=";
+
+        // <summary>URL to </summary>
+        internal static string OpenArchiveLink = ip + "/api/openarchive/?id=";
 
         // <summary>URL to view media library</summary>
         internal static string ViewLink = ip + "/cdarcha";
