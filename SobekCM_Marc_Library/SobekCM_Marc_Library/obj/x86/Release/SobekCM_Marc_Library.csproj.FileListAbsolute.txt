@@ -1,0 +1,101 @@
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\iconv.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxml2.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxslt.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\yaz.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\zlib1.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.YazSharp.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csprojResolveAssemblyReference.cache
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v31\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.pdb
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\iconv.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxml2.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxslt.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\yaz.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\zlib1.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.pdb
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.YazSharp.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csprojResolveAssemblyReference.cache
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v32\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.pdb
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\iconv.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxml2.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxslt.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\yaz.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\zlib1.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.pdb
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.YazSharp.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csprojResolveAssemblyReference.cache
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.dll
+c:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v34\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\iconv.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxml2.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxslt.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\yaz.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\zlib1.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.YazSharp.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2010\Projects\okcz-v35\obalkyknih\skenovaci-klient\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csprojResolveAssemblyReference.cache
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\iconv.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxml2.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxslt.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\yaz.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\zlib1.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.YazSharp.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csprojResolveAssemblyReference.cache
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\iconv.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxml2.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxslt.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\yaz.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\zlib1.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.YazSharp.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csprojResolveAssemblyReference.cache
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csproj.CoreCompileInputs.cache
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\iconv.dll
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxml2.dll
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxslt.dll
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\yaz.dll
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\zlib1.dll
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.dll
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.YazSharp.dll
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csprojAssemblyReference.cache
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csproj.CoreCompileInputs.cache
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csproj.CopyComplete
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\source\repos\Archivacni_klient_v0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\iconv.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxml2.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\libxslt.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\yaz.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\zlib1.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\bin\x86\Release\Zoom.Net.YazSharp.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csprojAssemblyReference.cache
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csproj.CoreCompileInputs.cache
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.csproj.CopyComplete
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\SobekCM_Marc_Library\SobekCM_Marc_Library\obj\x86\Release\SobekCM_Marc_Library.pdb

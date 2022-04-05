@@ -1,0 +1,6 @@
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\bin\Debug\CroppingAdorner.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\bin\Debug\CroppingAdorner.pdb
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\Debug\DAP.Adorners.Properties.Resources.resources
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\Debug\CroppingAdorner.csproj.GenerateResource.Cache
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\Debug\CroppingAdorner.dll
+C:\Users\PC\Documents\Visual Studio 2010\Projects\Archivacni_klient_v0\CroppingAdorner\CroppingAdorner\obj\Debug\CroppingAdorner.pdb

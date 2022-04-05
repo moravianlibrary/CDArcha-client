@@ -1,0 +1,268 @@
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\iconv.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\libxml2.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\libxslt.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\yaz.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\zlib1.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\CDArcha_klient.exe.config
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\CDArcha_klient.exe.manifest
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\CDArcha_klient.application
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\CDArcha_klient.exe
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\CDArcha_klient.pdb
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\CroppingAdorner.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\Newtonsoft.Json.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\Zoom.Net.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\Zoom.Net.YazSharp.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\Newtonsoft.Json.xml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\bin\Release\Interop.WIA.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csprojResolveAssemblyReference.cache
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\Interop.WIA.dll
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.ResolveComReference.cache
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\AboutWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CreateNewUnionWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CreateNewUnitWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CredentialsWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\HelpWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\MainWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\MessageBoxDialogWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\MetadataWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\MoveScannedPageWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\SettingsWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\UploadWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\ExternalImageLoadWindow.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\App.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\AboutWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CreateNewUnionWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CreateNewUnitWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CredentialsWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\HelpWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\MainWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\MessageBoxDialogWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\MetadataWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\MoveScannedPageWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\SettingsWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\TabsControl.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\UploadWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\ExternalImageLoadWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\App.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\GeneratedInternalTypeHelper.g.cs
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient_MarkupCompile.cache
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient_MarkupCompile.lref
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\TabsControl.baml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient.g.resources
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient.Properties.Resources.resources
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.GenerateResource.Cache
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.CoreCompileInputs.cache
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient.TrustInfo.xml
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient.exe.manifest
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient.application
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient.exe
+C:\Users\PC\Documents\Visual Studio 2017\Projects\Archivacni_klient_v0\CDArcha_klient\obj\x86\Release\CDArcha_klient.pdb
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\iconv.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\libxml2.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\libxslt.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\yaz.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\zlib1.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.exe.config
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.exe.manifest
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.application
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.exe
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.pdb
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CroppingAdorner.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Iso9660.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Streams.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Newtonsoft.Json.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\SobekCM_Marc_Library.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Zoom.Net.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Zoom.Net.YazSharp.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Core.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\SobekCM_Marc_Library.pdb
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Iso9660.pdb
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Streams.pdb
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Newtonsoft.Json.xml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Core.pdb
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Interop.WIA.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csprojAssemblyReference.cache
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\Interop.WIA.dll
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.ResolveComReference.cache
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\AboutWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnionWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnitWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CredentialsWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\HelpWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MainWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MessageBoxDialogWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MetadataWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MoveScannedPageWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\SettingsWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\UploadWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\ExternalImageLoadWindow.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\App.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\AboutWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnionWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnitWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CredentialsWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\HelpWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MainWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MessageBoxDialogWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MetadataWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MoveScannedPageWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\SettingsWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\TabsControl.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\UploadWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\ExternalImageLoadWindow.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\App.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\GeneratedInternalTypeHelper.g.cs
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient_MarkupCompile.cache
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient_MarkupCompile.lref
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\TabsControl.baml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.g.resources
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.Properties.Resources.resources
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.GenerateResource.cache
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.CoreCompileInputs.cache
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.TrustInfo.xml
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.exe.manifest
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.application
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.CopyComplete
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.exe
+C:\Users\PC\Documents\Visual Studio 2019\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.pdb
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\iconv.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\libxml2.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\libxslt.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\yaz.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\zlib1.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.exe.config
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.exe.manifest
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.application
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.exe
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.pdb
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CroppingAdorner.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Iso9660.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Streams.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Newtonsoft.Json.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\SobekCM_Marc_Library.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Zoom.Net.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Zoom.Net.YazSharp.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Core.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\SobekCM_Marc_Library.pdb
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Iso9660.pdb
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Streams.pdb
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Newtonsoft.Json.xml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Core.pdb
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Interop.WIA.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csprojAssemblyReference.cache
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\Interop.WIA.dll
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.ResolveComReference.cache
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\AboutWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnionWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnitWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CredentialsWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\HelpWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MainWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MessageBoxDialogWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MetadataWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MoveScannedPageWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\SettingsWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\UploadWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\ExternalImageLoadWindow.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\App.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\AboutWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnionWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnitWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CredentialsWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\HelpWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MainWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MessageBoxDialogWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MetadataWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MoveScannedPageWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\SettingsWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\TabsControl.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\UploadWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\ExternalImageLoadWindow.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\App.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\GeneratedInternalTypeHelper.g.cs
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient_MarkupCompile.cache
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient_MarkupCompile.lref
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\TabsControl.baml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.g.resources
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.Properties.Resources.resources
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.GenerateResource.cache
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.CoreCompileInputs.cache
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.TrustInfo.xml
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.exe.manifest
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.application
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.CopyComplete
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.exe
+c:\svn\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.pdb
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\iconv.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\libxml2.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\libxslt.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\yaz.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\zlib1.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.exe.config
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.exe.manifest
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.application
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.exe
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CDArcha_klient.pdb
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\CroppingAdorner.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Core.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Iso9660.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Streams.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Udf.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Newtonsoft.Json.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\SobekCM_Marc_Library.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Zoom.Net.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Zoom.Net.YazSharp.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\SobekCM_Marc_Library.pdb
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Core.xml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Iso9660.xml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Streams.xml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\DiscUtils.Udf.xml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Newtonsoft.Json.xml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\bin\Release\Interop.WIA.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.AssemblyReference.cache
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.SuggestedBindingRedirects.cache
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\Interop.WIA.dll
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.ResolveComReference.cache
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\AboutWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnionWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnitWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CredentialsWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\HelpWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MainWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MessageBoxDialogWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MetadataWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MoveScannedPageWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\SettingsWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\UploadWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\ExternalImageLoadWindow.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\App.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\AboutWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnionWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CreateNewUnitWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CredentialsWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\HelpWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MainWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MessageBoxDialogWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MetadataWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\MoveScannedPageWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\SettingsWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\TabsControl.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\UploadWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\ExternalImageLoadWindow.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\App.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\GeneratedInternalTypeHelper.g.cs
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient_MarkupCompile.cache
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient_MarkupCompile.lref
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\TabsControl.baml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.g.resources
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.Properties.Resources.resources
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.GenerateResource.cache
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.CoreCompileInputs.cache
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.TrustInfo.xml
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.exe.manifest
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.application
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.csproj.CopyComplete
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.exe
+C:\Project\Archivacni_klient_v1.0\CDArcha_klient\obj\x86\Release\CDArcha_klient.pdb
